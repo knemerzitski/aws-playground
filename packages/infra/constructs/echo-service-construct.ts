@@ -20,7 +20,7 @@ export class EchoServiceConstruct extends Construct {
     this.function = new NodejsFunction(this, 'Function', {
       handler: 'index.handler',
       runtime: Runtime.NODEJS_22_X,
-      code: Code.fromAsset(path.join(__dirname, '../../echo/dist')),
+      code: Code.fromAsset(path.join(__dirname, '../../echo-service/dist')),
       timeout: Duration.seconds(5),
       memorySize: 128,
       logGroup: new LogGroup(this, 'LogGroup', {
