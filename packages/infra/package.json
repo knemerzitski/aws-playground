@@ -6,7 +6,8 @@
   "scripts": {
     "cdk": "cdk",
     "synth": "cdk synth",
-    "start": "sam local start-api --warm-containers EAGER --host localhost -p 3000 -t cdk.out/AwsPlaygroundStack.template.json"
+    "start": "sam local start-api --warm-containers EAGER --host localhost -p 3000 -t cdk.out/AwsPlaygroundStack.template.json",
+    "test": "vitest run"
   },
   "devDependencies": {
     "@types/node": "22.7.9",
