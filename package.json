@@ -5,6 +5,7 @@
   "workspaces": [
     "packages/*"
   ],
+  "type": "module",
   "description": "Playground to test AWS features, focusing on serverless.",
   "main": "index.js",
   "scripts": {
