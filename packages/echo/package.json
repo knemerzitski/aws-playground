@@ -4,10 +4,12 @@
   "private": "true",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "clean": "rimraf dist/*",
+    "build": "vite-node scripts/build.ts src/handlers/index.ts --outfile dist/handlers/index.mjs"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.150",
-    "aws-lambda": "^1.0.7"
+    "aws-lambda": "^1.0.7",
+    "esbuild": "^0.25.6"
   }
 }
