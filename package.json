@@ -1,6 +1,10 @@
 {
   "name": "aws-playground",
   "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
   "description": "Playground to test AWS features, focusing on serverless.",
   "main": "index.js",
   "scripts": {
