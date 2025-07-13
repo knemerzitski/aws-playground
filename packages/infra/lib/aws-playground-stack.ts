@@ -4,7 +4,7 @@ import { EchoServiceConstruct } from '../constructs/echo-service-construct';
 import { Cors, EndpointType, RestApi } from 'aws-cdk-lib/aws-apigateway';
 // import * as sqs from 'aws-cdk-lib/aws-sqs';
 
-export class InfraStack extends cdk.Stack {
+export class AwsPlaygroundStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 

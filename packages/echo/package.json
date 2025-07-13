@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "clean": "rimraf dist/*",
-    "build": "vite-node scripts/build.ts src/handlers/index.ts --outfile dist/handlers/index.mjs"
+    "build": "vite-node scripts/build.ts src/handler.ts --outfile dist/index.mjs"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.150",

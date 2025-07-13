@@ -6,7 +6,7 @@ import rootConfig from '../../eslint.config.mjs';
 export default [
   ...rootConfig,
   {
-    ignores: ['cdk.dist', 'dist'],
+    ignores: ['cdk.out', 'dist'],
   },
   {
     languageOptions: {

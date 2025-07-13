@@ -5,10 +5,10 @@ export const handler: APIGatewayProxyHandler = function (
   _context,
   _callback
 ) {
-  console.log('Processing event', event);
+  console.log('Echo event', event);
 
   return Promise.resolve({
     statusCode: 200,
-    body: 'TODO echo back body',
+    body: event.body ?? '',
   });
 };

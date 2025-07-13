@@ -1,7 +1,8 @@
 import { Duration } from 'aws-cdk-lib';
 import { LambdaIntegration, RestApi } from 'aws-cdk-lib/aws-apigateway';
-import { Code } from 'aws-cdk-lib/aws-lambda';
+import { Code, Runtime } from 'aws-cdk-lib/aws-lambda';
 import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
+import { LogGroup, RetentionDays } from 'aws-cdk-lib/aws-logs';
 import { Construct } from 'constructs';
 import path from 'node:path';
 
@@ -17,12 +18,17 @@ export class EchoServiceConstruct extends Construct {
     super(scope, id);
 
     this.function = new NodejsFunction(this, 'Function', {
-      code: Code.fromAsset(path.join(__dirname, '../../echo/dist/index')),
+      handler: 'index.handler',
+      runtime: Runtime.NODEJS_22_X,
+      code: Code.fromAsset(path.join(__dirname, '../../echo/dist')),
       timeout: Duration.seconds(5),
       memorySize: 128,
+      logGroup: new LogGroup(this, 'LogGroup', {
+        retention: RetentionDays.ONE_DAY,
+      }),
     });
 
-    const resource = props.api.root.addResource('echo')
+    const resource = props.api.root.addResource('echo');
     resource.addMethod('POST', new LambdaIntegration(this.function));
   }
 }
