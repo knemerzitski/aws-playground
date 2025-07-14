@@ -3,6 +3,7 @@ import js from '@eslint/js';
 import tsEslint from 'typescript-eslint';
 import eslintConfigPrettier from 'eslint-config-prettier';
 import turboPlugin from 'eslint-plugin-turbo';
+import turboConfig from 'eslint-config-turbo/flat';
 
 /** @type {import('eslint').Linter.Config[]} */
 export const baseConfig = [
@@ -58,4 +59,5 @@ export const baseConfig = [
       'turbo/no-undeclared-env-vars': 'warn',
     },
   },
+  turboConfig,
 ];
