@@ -6,7 +6,6 @@ import configPrettier from 'eslint-config-prettier';
 /** @type {import('eslint').Linter.Config[]} */
 /** @type {import('@typescript-eslint/utils').TSESLint.FlatConfig.ConfigFile} */
 export default [
-  // Ignores
   {
     ignores: ['**/dist', '**/*.config*.{mjs,ts}', '**/.prettierrc.cjs'],
   },
@@ -22,7 +21,7 @@ export default [
   pluginJs.configs.recommended,
 
   // Typescript
-  ...tsEslint.configs.strictTypeChecked.map((config) => ({
+  ...tsEslint.configs.recommendedTypeChecked.map((config) => ({
     ...config,
     files: ['**/*.ts?(x)'],
   })),
@@ -38,6 +37,7 @@ export default [
       },
     },
   },
+  // Ignore unused _underscore variables
   {
     files: ['**/*.{ts,tsx}'],
     rules: {

@@ -3,7 +3,9 @@ import config from '../esbuild.config';
 
 await buildWithOptions(readArgs());
 
-function buildWithOptions(options: Pick<BuildOptions, 'entryPoints' | 'outfile'>) {
+function buildWithOptions(
+  options: Pick<BuildOptions, 'entryPoints' | 'outfile'>
+) {
   return build({
     ...config,
     entryPoints: options.entryPoints,

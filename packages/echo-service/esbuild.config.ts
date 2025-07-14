@@ -7,7 +7,6 @@ const config: BuildOptions = {
 
   target: 'node22',
   platform: 'node',
-
   format: 'esm',
 
   /**

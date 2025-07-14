@@ -4,8 +4,12 @@
   "private": "true",
   "type": "module",
   "scripts": {
-    "clean": "rimraf dist/*",
-    "build": "vite-node scripts/build.ts src/handler.ts --outfile dist/index.mjs"
+    "clean": "rimraf dist/* .eslintcache",
+    "build": "vite-node scripts/build.ts src/handler.ts --outfile dist/index.mjs",
+    "prettier": "prettier --write --ignore-unknown src",
+    "eslint": "eslint . --cache --max-warnings 0",
+    "type-check": "tsc --noEmit --project tsconfig.tsc.json",
+    "lint": "npm run type-check && npm run eslint"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.150",

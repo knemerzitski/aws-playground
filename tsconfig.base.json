@@ -2,9 +2,8 @@
   "$schema": "https://json.schemastore.org/tsconfig",
   "compilerOptions": {
     /* Language and Environment */
-    "target": "ES2022",
-    "lib": ["ES2023"],
-    "jsx": "preserve",
+    "target": "es2022",
+    "lib": ["es2024"],
     "experimentalDecorators": false,
 
     /* Modules */

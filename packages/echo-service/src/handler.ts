@@ -1,10 +1,6 @@
 import { APIGatewayProxyHandler } from 'aws-lambda';
 
-export const handler: APIGatewayProxyHandler = function (
-  event,
-  _context,
-  _callback
-) {
+export const handler: APIGatewayProxyHandler = function (event, _context, _callback) {
   console.log('Echo event', event);
 
   return Promise.resolve({
