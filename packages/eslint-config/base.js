@@ -26,6 +26,14 @@ export const baseConfig = [
   // Typescript
   ...tsEslint.configs.recommendedTypeChecked,
   ...tsEslint.configs.stylisticTypeChecked,
+  {
+    languageOptions: {
+      parserOptions: {
+        projectService: true,
+        tsconfigRootDir: import.meta.dirname,
+      },
+    },
+  },
   // Ignore unused _underscore variables
   {
     rules: {

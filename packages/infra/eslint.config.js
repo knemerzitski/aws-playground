@@ -4,6 +4,6 @@ import { nodeConfig } from '@repo/eslint-config/node';
 export default [
   ...nodeConfig,
   {
-    ignores: ['cdk.out'],
+    ignores: ['cdk.out', 'vitest.config.ts', 'eslint.config.js'],
   },
 ];
