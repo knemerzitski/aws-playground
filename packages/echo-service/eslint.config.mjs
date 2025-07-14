@@ -1,16 +1,4 @@
-import globals from 'globals';
+import { nodeConfig } from '@repo/eslint-config/node';
 
-import rootConfig from '../../eslint.config.mjs';
-
-/** @type {import('eslint').Linter.Config[]} */
-export default [
-  ...rootConfig,
-  {
-    ignores: ['scripts'],
-  },
-  {
-    languageOptions: {
-      globals: globals.node,
-    },
-  },
-];
+/** @type {import("eslint").Linter.Config[]} */
+export default nodeConfig;

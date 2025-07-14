@@ -1,13 +1,10 @@
 import globals from 'globals';
 
-import rootConfig from '../../eslint.config.mjs';
+import baseConfig from './base.js';
 
 /** @type {import('eslint').Linter.Config[]} */
-export default [
-  ...rootConfig,
-  {
-    ignores: ['cdk.out'],
-  },
+export const nodeConfig = [
+  ...baseConfig,
   {
     languageOptions: {
       globals: globals.node,
