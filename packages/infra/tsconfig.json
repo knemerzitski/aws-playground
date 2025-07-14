@@ -13,8 +13,7 @@
     /* Emit */
     "declarationMap": true,
     "inlineSourceMap": false,
-    "sourceMap": true,
-    "outDir": "dist"
+    "sourceMap": true
   },
   "include": ["lib", "bin", "__tests__"],
   "exclude": ["node_modules", "cdk.out"]
