@@ -1,5 +1,5 @@
 {
-  "extends": "../../tsconfig.base.json",
+  "extends": "@repo/typescript-config/node.json",
   "compilerOptions": {
     /* Language and Environment */
     "experimentalDecorators": true,
