@@ -1,6 +1,18 @@
+# Dependencies
 node_modules
-dist
 
+
+# Eslint
 .eslintcache
+
+# Type Checking
 *.tsbuildinfo
 *.tsc.tsbuildinfo
+
+#Turbo
+.turbo
+
+#Build Outputs
+dist
+
+

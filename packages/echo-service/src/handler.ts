@@ -1,4 +1,4 @@
-import { identityFn } from '@me/common';
+import { identityFn } from '@repo/common';
 import { APIGatewayProxyHandler } from 'aws-lambda';
 
 export const handler: APIGatewayProxyHandler = function (event, _context, _callback) {

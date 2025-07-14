@@ -6,7 +6,7 @@
 
     /* Modules */
     "module": "Node16",
-    "moduleResolution": "Node16",
+    "moduleResolution": "bundler",
     "baseUrl": ".",
 
     /* Emit */

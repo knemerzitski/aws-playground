@@ -4,19 +4,18 @@
   "private": "true",
   "type": "module",
   "scripts": {
-    "clean": "rimraf dist/* .eslintcache",
+    "clean": "rimraf dist/* .turbo/* .eslintcache *.tsbuildinfo",
     "test": "vitest run",
     "test:w": "vitest watch",
-    "build": "vite-node scripts/build.ts src/handler.ts --outfile dist/index.mjs",
+    "build": "vite build",
     "prettier": "prettier --write --ignore-unknown src",
-    "eslint": "eslint . --cache --max-warnings 0",
-    "type-check": "tsc --noEmit --project tsconfig.tsc.json",
-    "lint": "npm run type-check && npm run eslint"
+    "lint": "eslint . --max-warnings 0",
+    "check-types": "tsc --noEmit"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.150",
     "aws-lambda": "^1.0.7",
-    "esbuild": "^0.25.6"
+    "vite": "^6.3.5"
   },
   "dependencies": {
     "@repo/common": "^1.0.0"
