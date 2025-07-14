@@ -2,6 +2,7 @@
   "name": "aws-playground",
   "private": true,
   "workspaces": [
+    "apps/*",
     "packages/*"
   ],
   "scripts": {
