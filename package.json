@@ -7,7 +7,7 @@
   "scripts": {
     "clean": "turbo run clean",
     "build": "turbo run build",
-    "format": "turbo run format",
+    "format": "prettier --write '**/*.{ts,tsx,md}'",
     "lint": "turbo run lint",
     "check-types": "turbo run check-types"
   },

@@ -8,7 +8,6 @@
     "test": "vitest run",
     "test:w": "vitest watch",
     "build": "vite build",
-    "format": "prettier --write --ignore-unknown src",
     "lint": "eslint . --max-warnings 0",
     "check-types": "tsc --noEmit"
   },
