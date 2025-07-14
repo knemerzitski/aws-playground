@@ -4,7 +4,6 @@ import { resolve } from 'path';
 export default defineConfig({
   build: {
     outDir: 'dist',
-
     target: 'node22',
 
     sourcemap: true,

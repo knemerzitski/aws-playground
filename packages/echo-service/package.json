@@ -19,6 +19,6 @@
     "vite": "^6.3.5"
   },
   "dependencies": {
-    "@repo/common": "^1.0.0"
+    "@repo/common": "^0.0.0"
   }
 }

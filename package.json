@@ -1,6 +1,5 @@
 {
   "name": "aws-playground",
-  "version": "1.0.0",
   "private": true,
   "workspaces": [
     "packages/*"
@@ -11,7 +10,10 @@
     "format": "turbo run format",
     "check-types": "turbo run check-types"
   },
-  "type": "module",
+  "devDependencies": {
+    "turbo": "^2.5.4",
+    "typescript": "^5.8.3"
+  },
   "description": "Playground to test AWS features, focusing on serverless.",
   "repository": {
     "type": "git",
@@ -23,10 +25,5 @@
     "url": "https://github.com/knemerzitski/aws-playground/issues"
   },
   "homepage": "https://github.com/knemerzitski/aws-playground#readme",
-  "packageManager": "npm@10.9.1+sha512.c89530d37c4baa38afd43e76a077a84b9aa63840b986426584fd5c5a54ab0a0b21bb1595c851042b733784b0b43706d36a494b4d8ae1a086a762cb8d3f95942a",
-  "devDependencies": {
-    "prettier": "^3.6.2",
-    "turbo": "^2.5.4",
-    "typescript": "^5.8.3"
-  }
+  "packageManager": "npm@10.9.1+sha512.c89530d37c4baa38afd43e76a077a84b9aa63840b986426584fd5c5a54ab0a0b21bb1595c851042b733784b0b43706d36a494b4d8ae1a086a762cb8d3f95942a"
 }

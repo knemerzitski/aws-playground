@@ -1,7 +1,6 @@
 # Dependencies
 node_modules
 
-
 # Eslint
 .eslintcache
 
@@ -9,10 +8,10 @@ node_modules
 *.tsbuildinfo
 *.tsc.tsbuildinfo
 
-#Turbo
+# Turbo
 .turbo
 
-#Build Outputs
+# Build Outputs
 dist
 
 

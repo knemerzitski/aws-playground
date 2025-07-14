@@ -1,13 +1,20 @@
 {
   "name": "@repo/common",
-  "version": "1.0.0",
+  "version": "0.0.0",
   "private": "true",
   "type": "module",
   "exports": {
     ".": "./src/index.ts"
   },
-  "scripts": {},
+  "scripts": {
+    "format": "prettier --write --ignore-unknown src",
+    "lint": "eslint . --max-warnings 0",
+    "check-types": "tsc --noEmit"
+  },
   "devDependencies": {
-    "@repo/eslint-config": "^0.0.0"
+    "@repo/eslint-config": "^0.0.0",
+    "@repo/typescript-config": "^0.0.0",
+    "eslint": "^9.31.0",
+    "typescript": "^5.8.3"
   }
 }
