@@ -1,10 +1,12 @@
 {
-  "name": "echo-service",
+  "name": "@repo/echo-service",
   "version": "1.0.0",
   "private": "true",
   "type": "module",
   "scripts": {
     "clean": "rimraf dist/* .eslintcache",
+    "test": "vitest run",
+    "test:w": "vitest watch",
     "build": "vite-node scripts/build.ts src/handler.ts --outfile dist/index.mjs",
     "prettier": "prettier --write --ignore-unknown src",
     "eslint": "eslint . --cache --max-warnings 0",
@@ -15,5 +17,8 @@
     "@types/aws-lambda": "^8.10.150",
     "aws-lambda": "^1.0.7",
     "esbuild": "^0.25.6"
+  },
+  "dependencies": {
+    "@repo/common": "^1.0.0"
   }
 }
