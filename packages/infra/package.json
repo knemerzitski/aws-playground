@@ -1,6 +1,6 @@
 {
   "name": "@repo/infra",
-  "version": "1.0.0",
+  "version": "0.0.0",
   "private": "true",
   "type": "module",
   "scripts": {
@@ -13,8 +13,8 @@
     "check-types": "tsc --noEmit"
   },
   "devDependencies": {
-    "@repo/eslint-config": "^0.0.0",
-    "@repo/typescript-config": "^0.0.0",
+    "@repo/eslint-config": "*",
+    "@repo/typescript-config": "*",
     "@types/node": "22.7.9",
     "aws-cdk": "2.1020.2",
     "typescript": "^5.8.3",
