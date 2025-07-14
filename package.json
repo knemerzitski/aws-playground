@@ -5,6 +5,12 @@
   "workspaces": [
     "packages/*"
   ],
+  "scripts": {
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "format": "turbo run format",
+    "check-types": "turbo run check-types"
+  },
   "type": "module",
   "description": "Playground to test AWS features, focusing on serverless.",
   "repository": {
