@@ -1,5 +1,6 @@
 {
   "files.associations": {
-    "packages/typescript-config/!(package).json": "jsonc"
+    "**/packages/typescript-config/base.json": "jsonc",
+    "**/packages/typescript-config/node.json": "jsonc"
   }
 }
