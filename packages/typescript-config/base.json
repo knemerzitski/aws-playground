@@ -2,46 +2,30 @@
   "$schema": "https://json.schemastore.org/tsconfig",
   "compilerOptions": {
     /* Language and Environment */
-    "target": "es2022",
-    "lib": ["es2024"],
-    "experimentalDecorators": false,
+    "target": "ES2022",
+    "lib": ["ESNext"],
 
     /* Modules */
-    "module": "esnext",
-    "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true,
-    "resolveJsonModule": true,
-    "typeRoots": ["./node_modules/@types"],
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
 
     /* Interop Constraints */
     "isolatedModules": true,
-    "allowSyntheticDefaultImports": true,
-    "forceConsistentCasingInFileNames": true,
     "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
 
     /* Completeness */
     "skipLibCheck": true,
 
     /* Emit */
     "noEmit": true,
-    "removeComments": true,
-    "inlineSourceMap": true,
-    "inlineSources": true,
     "declaration": true,
+    "declarationMap": true,
 
     /* Type Checking */
-    "alwaysStrict": true,
     "strict": true,
-    "strictNullChecks": true,
-    "noImplicitReturns": true,
     "noUncheckedIndexedAccess": true,
-    "noImplicitAny": true,
-    "noImplicitThis": true,
-    // Using @typescript-eslint/no-unused-vars instead which allows ignoring by leading underscore
-    "noUnusedLocals": false,
     "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": false,
-    "strictPropertyInitialization": false,
     "noImplicitOverride": true,
 
     /* JavaScript Support */

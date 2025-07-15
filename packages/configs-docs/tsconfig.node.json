@@ -1,0 +1,11 @@
+{
+  "extends": "@repo/typescript-config/node.json",
+  "compilerOptions": {
+    /* Emit */
+    "noEmit": false,
+
+    /* Projects */
+    "composite": true
+  },
+  "include": ["src/node"]
+}
