@@ -12,7 +12,6 @@ export interface EchoServiceConstructProps {
 
 export class EchoServiceConstruct extends Construct {
   readonly function: NodejsFunction;
-  readonly url: URL;
 
   constructor(scope: Construct, id: string, props: EchoServiceConstructProps) {
     super(scope, id);
