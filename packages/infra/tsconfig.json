@@ -1,20 +1,6 @@
 {
   "extends": "@repo/typescript-config/node.json",
-  "compilerOptions": {
-    /* Language and Environment */
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
-
-    /* Modules */
-    "baseUrl": ".",
-    "moduleResolution": "Node",
-    "paths": {},
-
-    /* Emit */
-    "declarationMap": true,
-    "inlineSourceMap": false,
-    "sourceMap": true
-  },
+  "compilerOptions": {},
   "include": ["lib", "bin", "__tests__"],
-  "exclude": ["node_modules", "cdk.out"]
+  "exclude": ["cdk.out"]
 }
