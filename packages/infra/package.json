@@ -10,7 +10,7 @@
     "test": "vitest run",
     "test:w": "vitest watch",
     "lint": "eslint . --max-warnings 0",
-    "check-types": "tsc --noEmit"
+    "check-types": "tsc"
   },
   "devDependencies": {
     "@repo/eslint-config": "*",
