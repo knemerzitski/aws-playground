@@ -6,4 +6,20 @@ export default [
   {
     ignores: ['eslint.config.js', 'vitest.config.ts'],
   },
+  {
+    files: ['!**/*.test.ts'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          paths: [
+            {
+              name: 'vitest',
+              message: `Don't use "vitest" in production code`,
+            },
+          ],
+        },
+      ],
+    },
+  },
 ];
