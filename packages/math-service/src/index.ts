@@ -2,8 +2,11 @@ import 'source-map-support/register';
 
 import { MathExpressionError, parseMathExpression } from '@repo/math-expr';
 import express from 'express';
+import { loadEnv } from './load-env';
 
-const PORT = 3000;
+loadEnv();
+
+const PORT = process.env.SERVICE_PORT ?? 3000;
 
 const app = express();
 
@@ -17,14 +20,14 @@ app.get('/eval', (req, res) => {
   }
 
   try {
-  const expressionTree = parseMathExpression(expr);
-  const result = expressionTree.evaluate();
-  
+    const expressionTree = parseMathExpression(expr);
+    const result = expressionTree.evaluate();
+
     console.debug(`Calculated expression: ${expr} = ${result}`);
 
-  return res.status(200).json({
-    result,
-  });
+    return res.status(200).json({
+      result,
+    });
   } catch (err) {
     if (err instanceof MathExpressionError) {
       return res.status(400).json({

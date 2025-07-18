@@ -9,7 +9,7 @@
       "dependsOn": ["^build"],
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
       "outputs": ["dist/**", "cdk.out/**"],
-      "env": ["CDK_DEFAULT_ACCOUNT", "CDK_DEFAULT_REGION"]
+      "env": ["SERVICE_PORT", "NODE_ENV", "CDK_DEFAULT_ACCOUNT", "CDK_DEFAULT_REGION"]
     },
     "lint": {
       "dependsOn": ["^lint"]
