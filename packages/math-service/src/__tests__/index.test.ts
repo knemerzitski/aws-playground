@@ -1,0 +1,29 @@
+import { expect, it } from 'vitest';
+
+const ENDPOINT = 'http://127.0.0.1:3000/eval';
+
+function fetchEvalExpr(expr: string) {
+  return fetch(`${ENDPOINT}?expr=${encodeURIComponent(expr)}`);
+}
+
+it('should evaluate expressions', async () => {
+  expect(await (await fetchEvalExpr('2+2')).json()).toStrictEqual({
+    result: 4,
+  });
+
+  expect(await (await fetchEvalExpr('5 * (3 + 2)')).json()).toStrictEqual({
+    result: 25,
+  });
+});
+
+it('should respond with "Bad Request" on missing query "eval"', async () => {
+  const res = await fetch(ENDPOINT);
+  expect(res.status).toStrictEqual(400);
+
+  const json = await res.json();
+  expect(json).toMatchInlineSnapshot(`
+    {
+      "error": "Missing required query parameter: expr",
+    }
+  `);
+});

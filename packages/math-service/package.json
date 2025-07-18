@@ -1,0 +1,29 @@
+{
+  "name": "@repo/math-service",
+  "version": "0.0.0",
+  "private": "true",
+  "type": "module",
+  "scripts": {
+    "test": "vitest run",
+    "test:w": "vitest watch",
+    "build": "vite build",
+    "build:w": "vite build --watch",
+    "start": "node ./dist/index.mjs",
+    "start:w": "nodemon ./dist/index.mjs",
+    "lint": "eslint . --max-warnings 0",
+    "check-types": "tsc"
+  },
+  "devDependencies": {
+    "@repo/eslint-config": "*",
+    "@repo/typescript-config": "*",
+    "@types/express": "^5.0.3",
+    "eslint": "^9.31.0",
+    "nodemon": "^3.1.10",
+    "typescript": "^5.8.3",
+    "vite": "^6.3.5"
+  },
+  "dependencies": {
+    "@repo/math-expr": "^0.0.0",
+    "express": "^5.1.0"
+  }
+}
