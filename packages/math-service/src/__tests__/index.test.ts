@@ -27,3 +27,11 @@ it('should respond with "Bad Request" on missing query "eval"', async () => {
     }
   `);
 });
+
+it('should gracefully handle exception from invalid math expressions', async () => {
+  expect(await (await fetchEvalExpr('just some text')).json()).toMatchInlineSnapshot(`
+    {
+      "error": "Unknown character "j" at position 0",
+    }
+  `);
+});

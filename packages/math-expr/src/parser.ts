@@ -1,3 +1,4 @@
+import { MathExpressionError } from './errors';
 import { LeftParenToken, RIGHT_PAREN, Token, tokenizeString } from './lexer';
 
 abstract class Statement {}
@@ -50,7 +51,7 @@ const BINARY_EXPRESSION_MAP = {
   },
 } as const;
 
-class ParserError extends Error {}
+export class ParserError extends MathExpressionError {}
 
 export class EndOfTokensParserError extends ParserError {
   constructor() {
