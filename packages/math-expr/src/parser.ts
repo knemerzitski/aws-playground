@@ -77,14 +77,14 @@ export class UnclosedParenthesisParserError extends TokenParserError {
 }
 
 export class UnexpectedTokenParserError extends TokenParserError {
-  readonly expectedTokens: readonly Token['type'][];
+  readonly expectedTokens;
 
   constructor({
     token,
     expectedTokens,
   }: {
     token: Token;
-    expectedTokens: readonly Token['type'][];
+    expectedTokens: readonly (Token['type'] | 'eof')[];
   }) {
     super(
       token,
@@ -110,7 +110,16 @@ class Parser {
   }
 
   parse(): Expression {
-    return this.parseExpr();
+    const result = this.parseExpr();
+
+    if (this.peekToken !== null) {
+      throw new UnexpectedTokenParserError({
+        token: this.peekToken,
+        expectedTokens: ['eof'],
+      });
+    }
+
+    return result;
   }
 
   private next() {

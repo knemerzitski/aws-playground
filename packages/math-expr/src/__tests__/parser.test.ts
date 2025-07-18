@@ -49,7 +49,7 @@ it('should parse all operations', () => {
 });
 
 it('should parse nested precendence with parenthesis', () => {
-  expect(expr('(2 + 3) * 4)')).toStrictEqual(20);
+  expect(expr('((2 + 3) * 4)')).toStrictEqual(20);
   expect(expr('2 *(5 + 3)')).toStrictEqual(16);
   expect(expr('2 *(5 + 3 + 2)')).toStrictEqual(20);
   expect(expr('2 * ((5 - 2) * (3 + 2))')).toStrictEqual(30);
@@ -66,5 +66,9 @@ describe('errors', () => {
 
   it('should throw error on empty expression', () => {
     expect(() => expr('')).toThrowError(EndOfTokensParserError);
+  });
+
+  it('should throw error on numbers without operations', () => {
+    expect(() => expr('2 2')).toThrowError(UnexpectedTokenParserError);
   });
 });
