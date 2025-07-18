@@ -1,3 +1,5 @@
+import 'source-map-support/register';
+
 import { MathExpressionError, parseMathExpression } from '@repo/math-expr';
 import express from 'express';
 
