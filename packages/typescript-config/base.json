@@ -19,6 +19,9 @@
 
     /* Emit */
     "noEmit": true,
+    // "sourceMap": true,
+    // "inlineSourceMap": true,
+    // "inlineSources": true,
     "declaration": true,
     "declarationMap": true,
 
