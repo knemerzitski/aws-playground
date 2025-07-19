@@ -4,11 +4,14 @@
   "private": "true",
   "type": "module",
   "scripts": {
-    "test": "vitest run",
-    "test:w": "vitest watch",
+    "dev": "concurrently 'npm run build:w' 'npm run start:w'",
     "build": "vite build",
-    "build:w": "vite build --watch",
     "start": "node ./dist/index.mjs",
+    "test": "npm run test:e2e",
+    "test:e2e": "start-server-and-test --expect 404 start http://localhost:${SERVICE_PORT:-3200} test:e2e:only",
+    "test:e2e:only": "vitest run",
+    "test:w": "vitest watch",
+    "build:w": "vite build --watch",
     "start:w": "nodemon ./dist/index.mjs",
     "lint": "eslint . --max-warnings 0",
     "typecheck": "tsc"
@@ -17,8 +20,10 @@
     "@repo/eslint-config": "*",
     "@repo/typescript-config": "*",
     "@types/express": "^5.0.3",
+    "concurrently": "^9.2.0",
     "eslint": "^9.31.0",
     "nodemon": "^3.1.10",
+    "start-server-and-test": "^2.0.12",
     "typescript": "^5.8.3",
     "vite": "^6.3.5"
   },
