@@ -1,7 +1,7 @@
 import { expect, it } from 'vitest';
 
-const PORT = process.env.SERVICE_PORT ?? '3000';
-const ENDPOINT = `http://127.0.0.1:${PORT}/eval`;
+const PORT = process.env.SERVICE_PORT ?? '3200';
+const ENDPOINT = `http://localhost:${PORT}/eval`;
 
 function fetchEvalExpr(expr: string) {
   return fetch(`${ENDPOINT}?expr=${encodeURIComponent(expr)}`);

@@ -5,9 +5,12 @@
   "type": "module",
   "scripts": {
     "cdk": "cdk",
+    "clean": "rimraf cdk.out/** dist/** *.tsbuildinfo",
     "synth": "cdk synth",
-    "start": "sam local start-api --warm-containers EAGER --skip-pull-image --host localhost -p 3000 -t cdk.out/AwsPlaygroundStack.template.json",
-    "test": "vitest run",
+    "start": "sam local start-api --warm-containers EAGER --skip-pull-image --host localhost -p ${PORT:-7000} -t cdk.out/AwsPlaygroundStack.template.json",
+    "test": "npm run test:e2e",
+    "test:e2e": "npm run synth && start-server-and-test --expect 403 start http://localhost:${PORT:-7000} test:e2e:only",
+    "test:e2e:only": "vitest run",
     "test:w": "vitest watch",
     "lint": "eslint . --max-warnings 0",
     "typecheck": "tsc"
@@ -17,8 +20,8 @@
     "@repo/typescript-config": "*",
     "@types/node": "22.7.9",
     "aws-cdk": "2.1020.2",
-    "typescript": "^5.8.3",
-    "vite-node": "^3.2.4"
+    "dotenv": "^17.2.0",
+    "typescript": "^5.8.3"
   },
   "dependencies": {
     "aws-cdk-lib": "2.202.0",

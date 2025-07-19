@@ -4,7 +4,7 @@
   "private": "true",
   "type": "module",
   "scripts": {
-    "clean": "rimraf dist/* .turbo/* *.tsbuildinfo",
+    "clean": "rimraf dist/* *.tsbuildinfo",
     "build": "vite build",
     "lint": "eslint . --max-warnings 0",
     "typecheck": "tsc"
