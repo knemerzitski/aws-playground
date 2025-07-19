@@ -1,6 +1,6 @@
 {
   "extends": "@repo/typescript-config/node.json",
   "compilerOptions": {},
-  "include": ["lib", "bin", "scripts", "__tests__"],
+  "include": ["lib", "bin", "__tests__"],
   "exclude": ["cdk.out"]
 }
