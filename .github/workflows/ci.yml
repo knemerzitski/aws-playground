@@ -1,0 +1,44 @@
+name: CI
+
+on:
+  push:
+    branches: ['main']
+  pull_request:
+    types: ['opened', 'synchronize']
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  CI: true
+  NODE_VERSION: 22.x
+
+jobs:
+  build:
+    name: Build And Test
+    timeout-minutes: 15
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Setup Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Clean install
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Static analysis
+        run: npm run check
+
+      - name: Test
+        run: npm run test
