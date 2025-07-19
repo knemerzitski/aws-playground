@@ -3,7 +3,7 @@ sidebar_label: 'NPM Scripts'
 sidebar_position: 0
 ---
 
-# NPM Scripts Naming Convention
+# NPM Scripts
 
 Scripts follow this pattern:
 
