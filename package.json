@@ -6,11 +6,14 @@
     "packages/*"
   ],
   "scripts": {
+    "docs": "npm run -w docs dev",
     "clean": "turbo run clean",
-    "build": "turbo run build",
-    "format": "prettier --write '**/*.{ts,tsx,md}'",
+    "build": "turbo run build --filter='!docs'",
+    "test": "turbo run test --filter='!docs'",
+    "format": "prettier --write '**/*.{ts,tsx,md,mdx}'",
     "lint": "turbo run lint",
-    "typecheck": "turbo run typecheck"
+    "typecheck": "turbo run typecheck",
+    "check": "turbo run lint typecheck"
   },
   "devDependencies": {
     "prettier": "^3.6.2",

@@ -9,14 +9,25 @@
       "dependsOn": ["^build"],
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
       "outputs": ["dist/**", "cdk.out/**"],
-      "env": ["SERVICE_PORT", "NODE_ENV", "CDK_DEFAULT_ACCOUNT", "CDK_DEFAULT_REGION"]
+      "env": [
+        "NODE_ENV",
+        "PORT",
+        "API_PORT",
+        "SERVICE_PORT",
+        "AWS_CDK",
+        "CDK_DEFAULT_ACCOUNT",
+        "CDK_DEFAULT_REGION"
+      ]
     },
-    "lint": {
-      "dependsOn": ["^lint"]
+    "start": {
+      "cache": false,
+      "persistent": true
     },
-    "check-types": {
-      "dependsOn": ["^check-types"]
+    "test": {
+      "dependsOn": ["build"]
     },
+    "lint": {},
+    "typecheck": {},
     "dev": {
       "cache": false,
       "persistent": true
