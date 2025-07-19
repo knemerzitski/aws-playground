@@ -1,0 +1,8 @@
+{
+  "label": "Conventions",
+  "position": 2,
+  "link": {
+    "type": "generated-index",
+    "description": "Conventions used in this monorepo for quicker onboarding."
+  }
+}

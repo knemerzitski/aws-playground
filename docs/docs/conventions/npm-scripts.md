@@ -1,6 +1,5 @@
 ---
-sidebar_label: 'NPM Scripts'
-sidebar_position: 0
+sidebar_position: 1
 ---
 
 # NPM Scripts

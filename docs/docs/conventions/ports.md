@@ -1,6 +1,5 @@
 ---
-sidebar_label: 'Ports Assignments'
-sidebar_position: 0
+sidebar_position: 2
 ---
 
 # Port Assignments
@@ -8,9 +7,7 @@ sidebar_position: 0
 This document outlines port usage for local development, testing, and CI environments.  
 All services should define ports via `.env.*` files to ensure consistent configuration.
 
----
-
-## Port Ranges (Convention)
+## Port Ranges
 
 | Range     | Purpose                                           |
 | --------- | ------------------------------------------------- |
