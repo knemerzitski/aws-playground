@@ -4,7 +4,7 @@
   "private": "true",
   "type": "module",
   "scripts": {
-    "clean": "rimraf dist/* .turbo/* .eslintcache *.tsbuildinfo",
+    "clean": "rimraf dist/* .eslintcache *.tsbuildinfo",
     "test": "vitest run",
     "test:w": "vitest watch",
     "build": "vite build",
