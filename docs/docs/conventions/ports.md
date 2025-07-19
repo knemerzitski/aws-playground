@@ -7,6 +7,13 @@ sidebar_position: 2
 This document outlines port usage for local development, testing, and CI environments.  
 All services should define ports via `.env.*` files to ensure consistent configuration.
 
+## Used Ports
+
+| Service              | Dev Port | Test Port | CI Port | Notes                       |
+| -------------------- | -------- | --------- | ------- | --------------------------- |
+| `@repo/math-service` | 3200     | ?         | ?       | Calculates math expressions |
+| `docs`               | 6100     | –         | –       | Developer documentation     |
+
 ## Port Ranges
 
 | Range     | Purpose                                           |
@@ -14,22 +21,9 @@ All services should define ports via `.env.*` files to ensure consistent configu
 | 3000–3999 | Development (hot reload, etc.)                    |
 | 4000–4999 | Local testing (integration, E2E)                  |
 | 5000–5999 | CI/automated testing                              |
-| 6000–6999 | Documentation/tools (e.g., Docusaurus, Storybook) |
+| 6100–6999 | Documentation/tools (e.g., Docusaurus, Storybook) |
 | 7000–7999 | Mock services, dev DBs                            |
 | 8000+     | Reserved / staging / future                       |
-
-## Service Port Assignments
-
-Right now below are just examples.
-TODO add ports of actual services
-
-| Service      | Dev Port | Test Port | CI Port | Notes                   |
-| ------------ | -------- | --------- | ------- | ----------------------- |
-| Web frontend | 3000     | 4000      | 5000    | Next.js app             |
-| API backend  | 3100     | 4100      | 5100    | Express / Node API      |
-| Docusaurus   | 6000     | –         | –       | Developer documentation |
-
-> All values are loaded via `.env` or `.env.*` files, not hardcoded.
 
 ## Example .env.development
 
