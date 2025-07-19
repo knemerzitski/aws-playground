@@ -13,6 +13,7 @@ All services should define ports via `.env.*` files to ensure consistent configu
 | -------------------- | -------- | --------- | ------- | --------------------------- |
 | `@repo/math-service` | 3200     | ?         | ?       | Calculates math expressions |
 | `docs`               | 6100     | –         | –       | Developer documentation     |
+| `infra`              | 7000     | –         | –       | API Gateway start-api port  |
 
 ## Port Ranges
 
