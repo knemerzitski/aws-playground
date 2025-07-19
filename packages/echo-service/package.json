@@ -9,7 +9,7 @@
     "test:w": "vitest watch",
     "build": "vite build",
     "lint": "eslint . --max-warnings 0",
-    "check-types": "tsc"
+    "typecheck": "tsc"
   },
   "devDependencies": {
     "@repo/eslint-config": "*",

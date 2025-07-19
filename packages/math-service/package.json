@@ -11,7 +11,7 @@
     "start": "node ./dist/index.mjs",
     "start:w": "nodemon ./dist/index.mjs",
     "lint": "eslint . --max-warnings 0",
-    "check-types": "tsc"
+    "typecheck": "tsc"
   },
   "devDependencies": {
     "@repo/eslint-config": "*",
