@@ -5,9 +5,10 @@
   "type": "module",
   "scripts": {
     "clean": "rimraf dist/* .eslintcache *.tsbuildinfo",
+    "build": "vite build",
     "test": "vitest run",
     "test:w": "vitest watch",
-    "build": "vite build",
+    "build:w": "vite build --watch",
     "lint": "eslint . --max-warnings 0",
     "typecheck": "tsc"
   },
