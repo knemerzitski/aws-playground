@@ -6,11 +6,13 @@
   "scripts": {
     "cdk": "cdk",
     "clean": "rimraf cdk.out/** dist/** *.tsbuildinfo",
+    "dev": "npm run synth:w && npm run start",
     "synth": "cdk synth",
-    "start": "sam local start-api --warm-containers EAGER --skip-pull-image --host localhost -p ${PORT:-7000} -t cdk.out/AwsPlaygroundStack.template.json",
+    "start": "sam local start-api --warm-containers eager --skip-pull-image --host localhost -p ${PORT:-7000} -t cdk.out/AwsPlaygroundStack.template.json",
     "test": "npm run test:e2e",
     "test:e2e": "npm run synth && start-server-and-test --expect 403 start http://localhost:${PORT:-7000} test:e2e:only",
     "test:e2e:only": "vitest run",
+    "synth:w": "WATCH=1 npm run synth",
     "test:w": "vitest watch",
     "lint": "eslint . --max-warnings 0",
     "typecheck": "tsc"

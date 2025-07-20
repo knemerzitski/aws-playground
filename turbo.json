@@ -14,7 +14,7 @@
         "PORT",
         "API_PORT",
         "SERVICE_PORT",
-        "AWS_CDK",
+        "WATCH",
         "CDK_DEFAULT_ACCOUNT",
         "CDK_DEFAULT_REGION"
       ]

@@ -8,6 +8,9 @@ export const handler: APIGatewayProxyHandler = function (event, _context, _callb
 
   return Promise.resolve({
     statusCode: 200,
+    headers: {
+      'Content-Type': 'text/plain',
+    },
     body,
   });
 };

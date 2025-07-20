@@ -4,6 +4,7 @@
   "private": "true",
   "type": "module",
   "scripts": {
+    "clean": "rimraf dist/* .eslintcache *.tsbuildinfo",
     "dev": "concurrently 'npm run build:w' 'npm run start:w'",
     "build": "vite build",
     "start": "node ./dist/index.mjs",
