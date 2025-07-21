@@ -1,13 +1,13 @@
 import { describe, expect, it } from 'vitest';
 import {
   EndOfTokensParserError,
-  parseString,
+  parseExpressionString,
   UnclosedParenthesisParserError,
   UnexpectedTokenParserError,
 } from '../parser';
 
 function expr(value: string): number {
-  return parseString(value).evaluate();
+  return parseExpressionString(value).evaluate();
 }
 
 it('should parse number', () => {

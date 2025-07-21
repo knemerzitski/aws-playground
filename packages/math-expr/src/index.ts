@@ -1,4 +1,9 @@
-import { parseString } from './parser';
+import { parseExpressionString } from './parser';
+import { expressionToString } from './expr-to-string';
 import { MathExpressionError } from './errors';
 
-export { parseString as parseMathExpression, MathExpressionError };
+export {
+  parseExpressionString as parseMathExpression,
+  expressionToString as mathExpressionToString,
+  MathExpressionError,
+};

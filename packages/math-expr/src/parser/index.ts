@@ -229,6 +229,6 @@ class Parser {
   }
 }
 
-export function parseString(value: string): Expression {
+export function parseExpressionString(value: string): Expression {
   return new Parser(value).parse();
 }
