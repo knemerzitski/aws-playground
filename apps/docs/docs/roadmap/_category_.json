@@ -1,0 +1,8 @@
+{
+  "label": "Roadmap",
+  "position": 2,
+  "link": {
+    "type": "generated-index",
+    "description": "Learning microservices architecture using math expressions to keep logic simple. This roadmap explores increasingly complex architectural patterns."
+  }
+}
