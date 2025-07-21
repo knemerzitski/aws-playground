@@ -3,7 +3,7 @@ import { MathExpressionError } from "./errors";
 type Digit = '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9';
 
 const OPERATORS = ['+', '-', '*', '/'] as const;
-type Operator = (typeof OPERATORS)[number];
+export type Operator = (typeof OPERATORS)[number];
 
 export const LEFT_PAREN = '(';
 export const RIGHT_PAREN = ')';

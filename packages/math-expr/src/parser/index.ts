@@ -1,55 +1,13 @@
-import { MathExpressionError } from './errors';
-import { LeftParenToken, RIGHT_PAREN, Token, tokenizeString } from './lexer';
-
-abstract class Statement {}
-
-abstract class Expression extends Statement {
-  abstract evaluate(): number;
-}
-
-abstract class Literal extends Expression {}
-
-class NumberLiteral extends Literal {
-  constructor(readonly value: number) {
-    super();
-  }
-
-  override evaluate(): number {
-    return this.value;
-  }
-}
-
-abstract class BinaryExpression extends Expression {
-  constructor(
-    readonly left: Expression,
-    readonly right: Expression
-  ) {
-    super();
-  }
-}
-
-const BINARY_EXPRESSION_MAP = {
-  '+': class AddBinaryExpression extends BinaryExpression {
-    override evaluate(): number {
-      return this.left.evaluate() + this.right.evaluate();
-    }
-  },
-  '-': class SubtractBinaryExpression extends BinaryExpression {
-    override evaluate(): number {
-      return this.left.evaluate() - this.right.evaluate();
-    }
-  },
-  '*': class MultiplyBinaryExpression extends BinaryExpression {
-    override evaluate(): number {
-      return this.left.evaluate() * this.right.evaluate();
-    }
-  },
-  '/': class DivideBinaryExpression extends BinaryExpression {
-    override evaluate(): number {
-      return this.left.evaluate() / this.right.evaluate();
-    }
-  },
-} as const;
+import {
+  BinaryExpression,
+  getBinaryExpressionConstructor,
+  getOperatorBinaryExpressionConstructor,
+  isBinaryExpressionAssociative,
+} from './binary-expression';
+import { MathExpressionError } from '../errors';
+import { LeftParenToken, RIGHT_PAREN, Token, tokenizeString } from '../lexer';
+import { Expression } from './expression';
+import { Literal, NumberLiteral } from './literal';
 
 export class ParserError extends MathExpressionError {}
 
@@ -152,12 +110,15 @@ class Parser {
         break;
       }
 
-      const BinaryExpressionClass = BINARY_EXPRESSION_MAP[this.peekToken.value];
+      const BinaryExpressionConstructor = getOperatorBinaryExpressionConstructor(
+        this.peekToken.value
+      );
 
       this.next(); // Skip operator since already peeked
       const rightExpression = this.parseTerm();
 
-      expression = new BinaryExpressionClass(expression, rightExpression);
+      expression = new BinaryExpressionConstructor(expression, rightExpression);
+      expression = this.flattenAssociativeChain(expression);
     }
 
     return expression;
@@ -175,12 +136,15 @@ class Parser {
         break;
       }
 
-      const BinaryExpressionClass = BINARY_EXPRESSION_MAP[this.peekToken.value];
+      const BinaryExpressionClass = getOperatorBinaryExpressionConstructor(
+        this.peekToken.value
+      );
 
       this.next(); // Skip operator since already peeked
       const rightExpression = this.parseFactor();
 
       expression = new BinaryExpressionClass(expression, rightExpression);
+      expression = this.flattenAssociativeChain(expression);
     }
 
     return expression;
@@ -220,6 +184,48 @@ class Parser {
       token,
       expectedTokens: ['number', 'left-paren'],
     });
+  }
+
+  /**
+   * Reduce depth of expressions consisting of consecutive associative chain.
+   *
+   * Example: `((1 + 2) + 3) + 4` => `(1 + 2) + (3 + 4)`
+   */
+  private flattenAssociativeChain(rootExpression: Expression): Expression {
+    if (!(rootExpression instanceof BinaryExpression)) {
+      return rootExpression;
+    }
+
+    if (!isBinaryExpressionAssociative(rootExpression)) {
+      return rootExpression;
+    }
+
+    const rootLeft = rootExpression.left;
+    if (!(rootLeft instanceof BinaryExpression)) {
+      return rootExpression;
+    }
+
+    const rootRight = rootExpression.right;
+
+    function isEqualToRootPrototype(node: Expression) {
+      return Object.getPrototypeOf(rootExpression) === Object.getPrototypeOf(node);
+    }
+
+    const hasNestedAssociativeExpressions =
+      isEqualToRootPrototype(rootLeft) &&
+      isEqualToRootPrototype(rootLeft.left) &&
+      rootLeft.right instanceof Literal;
+
+    if (!hasNestedAssociativeExpressions) {
+      return rootExpression;
+    }
+
+    const BinaryExpressionConstructor = getBinaryExpressionConstructor(rootExpression);
+
+    return new BinaryExpressionConstructor(
+      rootLeft.left,
+      new BinaryExpressionConstructor(rootLeft.right, rootRight)
+    );
   }
 }
 
