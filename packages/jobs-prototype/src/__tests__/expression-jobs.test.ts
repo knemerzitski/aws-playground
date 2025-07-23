@@ -15,6 +15,7 @@ it('should evaluate expression jobs for distributed compute', async () => {
   await evaluateExpect('1', 1);
   await evaluateExpect('1 + 5', 6);
   await evaluateExpect('1 + (2 + 10 + 3) * 5', 76);
+  await evaluateExpect('4 + (20 / 5 - 3) * 5', 9);
 });
 
 async function evaluateExpect(expressionString: string, expected: number) {
@@ -28,41 +29,69 @@ async function distributedEvaluate(expression: Expression): Promise<number> {
   const jobs = expressionToJobs(expression);
 
   const struct = createJobsProcessor(jobs, null);
-  await struct.processJobs();
+  const processedJobs = await struct.processJobs();
 
-  assert(jobs[0]?.result?.type === 'number-literal');
+  assert(processedJobs[0]?.result?.type === 'number-literal');
 
-  return jobs[0]?.result.value;
+  return processedJobs[0]?.result.value;
 }
 
 function createJobsProcessor(jobs: Job[], log: typeof console.log | null = console.log) {
+  const jobsMap = new Map<string, Job>(jobs.map((job) => [job.id, job]));
+
   function completedJob(_job: Job) {
     log?.(`Job completed`);
   }
 
   function updateJobDependants(completedJob: Job) {
-    const dependents = jobs.filter((job) => job.dependencies.includes(completedJob.id));
+    const dependents = [...jobsMap.values()].filter((job) =>
+      job.dependencies.includes(completedJob.id)
+    );
     log?.(`Updating dependants`);
     for (const dep of dependents) {
-      dep.incompleteDependenciesCount--;
+      const updatedJob: Job = {
+        ...dep,
+        incompleteDependenciesCount: dep.incompleteDependenciesCount - 1,
+      };
+      jobsMap.set(dep.id, updatedJob);
 
-      if (dep.incompleteDependenciesCount === 0) {
-        log?.(`Ready to process: ${dep.id}`);
-        readyJobs.push(dep);
+      if (updatedJob.incompleteDependenciesCount === 0) {
+        log?.(`Ready to process: ${updatedJob.id}`);
+        readyJobs.push(updatedJob);
       }
     }
   }
 
   const repository: JobRepository<Job> = {
-    get: (jobId: string) => Promise.resolve(jobs.find((job) => job.id === jobId)),
+    get: (jobId: string) => Promise.resolve(jobsMap.get(jobId)),
     saveResult: (jobId, result) => {
-      const job = jobs.find((job) => job.id === jobId);
+      const job = jobsMap.get(jobId);
       if (job === undefined) {
         throw new Error(`Save failed, job doesn't exist: ${jobId}`);
       }
 
-      job.status = 'completed';
-      job.result = result;
+      jobsMap.set(job.id, {
+        ...job,
+        status: 'completed',
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any
+        result: result as any,
+      });
+
+      return Promise.resolve();
+    },
+    markFailed: (jobId, message) => {
+      const job = jobsMap.get(jobId);
+      if (job === undefined) {
+        throw new Error(`Mark job failed, job doesn't exist: ${jobId}`);
+      }
+
+      jobsMap.set(job.id, {
+        ...job,
+        status: 'failed',
+        result: null,
+        failedAt: new Date().toISOString(),
+        failureReason: message,
+      });
 
       return Promise.resolve();
     },
@@ -77,7 +106,7 @@ function createJobsProcessor(jobs: Job[], log: typeof console.log | null = conso
   ];
 
   function isJobReady<T extends Job>(job: T): job is ReadyJob<T> {
-    return job.status === 'pending';
+    return job.status === 'pending' && job.incompleteDependenciesCount === 0;
   }
 
   async function processJob(job: Job) {
@@ -100,9 +129,7 @@ function createJobsProcessor(jobs: Job[], log: typeof console.log | null = conso
     throw new Error(`Unsupported job type: ${job.type}`);
   }
 
-  const readyJobs = jobs.filter(
-    (job) => job.status === 'pending' && job.incompleteDependenciesCount === 0
-  );
+  const readyJobs: Job[] = [...jobsMap.values()].filter(isJobReady);
 
   return {
     processJobs: async () => {
@@ -110,6 +137,8 @@ function createJobsProcessor(jobs: Job[], log: typeof console.log | null = conso
       while ((job = readyJobs.pop()) !== undefined) {
         await processJob(job);
       }
+
+      return [...jobsMap.values()];
     },
   };
 }

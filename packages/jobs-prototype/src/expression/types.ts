@@ -1,20 +1,20 @@
 export interface NumberLiteralValue {
-  type: 'number-literal';
-  value: number;
+  readonly type: 'number-literal';
+  readonly value: number;
 }
 
 interface JobReferenceValue {
-  type: 'job-id';
-  value: string;
+  readonly type: 'job-id';
+  readonly value: string;
 }
 
 export type ExpressionValue = JobReferenceValue | NumberLiteralValue;
 
 export interface BinaryExpressionBasePayload<TOperator> {
-  type: 'binary-expression';
-  operator: TOperator;
-  left: ExpressionValue;
-  right: ExpressionValue;
+  readonly type: 'binary-expression';
+  readonly operator: TOperator;
+  readonly left: ExpressionValue;
+  readonly right: ExpressionValue;
 }
 
 export type AdditionBinaryExpressionPayload = BinaryExpressionBasePayload<'addition'>;

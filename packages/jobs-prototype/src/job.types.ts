@@ -1,12 +1,12 @@
 import { JobRegistry } from './job.registry';
 
 interface JobBase {
-  rootId: string;
-  id: string;
-  parentId?: string;
-  dependencies: string[];
-  incompleteDependenciesCount: number;
-  status: 'pending' | 'in-progress' | 'completed' | 'failed';
+  readonly rootId: string;
+  readonly id: string;
+  readonly parentId?: string;
+  readonly dependencies: string[];
+  readonly incompleteDependenciesCount: number;
+  readonly status: 'pending' | 'in-progress' | 'completed' | 'failed';
   // version?: number;
   // metrics: {
   //   computeTimeMs: number;
@@ -29,33 +29,33 @@ interface JobBase {
 }
 
 type PendingJob<K extends keyof JobRegistry> = JobBase & {
-  type: K;
-  status: 'pending';
-  payload: JobRegistry[K]['payload'];
-  result: null;
+  readonly type: K;
+  readonly status: 'pending';
+  readonly payload: JobRegistry[K]['payload'];
+  readonly result: null;
 };
 
 type InProgressJob<K extends keyof JobRegistry> = JobBase & {
-  type: K;
-  status: 'in-progress';
-  payload: JobRegistry[K]['payload'];
-  result: null;
+  readonly type: K;
+  readonly status: 'in-progress';
+  readonly payload: JobRegistry[K]['payload'];
+  readonly result: null;
 };
 
 type CompletedJob<K extends keyof JobRegistry> = JobBase & {
-  type: K;
-  status: 'completed';
-  payload: JobRegistry[K]['payload'];
-  result: JobRegistry[K]['result'];
+  readonly type: K;
+  readonly status: 'completed';
+  readonly payload: JobRegistry[K]['payload'];
+  readonly result: JobRegistry[K]['result'];
 };
 
 type FailedJob<K extends keyof JobRegistry> = JobBase & {
-  type: K;
-  status: 'failed';
-  payload: JobRegistry[K]['payload'];
-  result: null;
-  failedAt: string;
-  failureReason: string;
+  readonly type: K;
+  readonly status: 'failed';
+  readonly payload: JobRegistry[K]['payload'];
+  readonly result: null;
+  readonly failedAt: string;
+  readonly failureReason: string;
 };
 
 export type IncompleteJob<T extends Job> = T & { status: 'pending' | 'failed' };
