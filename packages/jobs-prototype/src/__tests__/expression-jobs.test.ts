@@ -10,6 +10,7 @@ import {
   SubtractionHandler,
 } from '../expression/handlers';
 import { JobHandler, JobRepository } from '../types';
+import { JobProcessor } from '../job-processor';
 
 it('should evaluate expression jobs for distributed compute', async () => {
   await evaluateExpect('1', 1);
@@ -62,7 +63,7 @@ function createJobsProcessor(jobs: Job[], log: typeof console.log | null = conso
     }
   }
 
-  const repository: JobRepository<Job> = {
+  const jobRepository: JobRepository<Job> = {
     get: (jobId: string) => Promise.resolve(jobsMap.get(jobId)),
     saveResult: (jobId, result) => {
       const job = jobsMap.get(jobId);
@@ -105,28 +106,10 @@ function createJobsProcessor(jobs: Job[], log: typeof console.log | null = conso
     new NumberLiteralHandler(),
   ];
 
+  const jobProcessor = new JobProcessor(jobHandlers, jobRepository);
+
   function isJobReady<T extends Job>(job: T): job is ReadyJob<T> {
     return job.status === 'pending' && job.incompleteDependenciesCount === 0;
-  }
-
-  async function processJob(job: Job) {
-    if (!isJobReady(job)) {
-      throw new Error(`Cannot process unready job: ${job.id}`);
-    }
-
-    log?.(`Processing job: ${job.id}`);
-
-    for (const handler of jobHandlers) {
-      if (handler.canHandle(job)) {
-        await handler.execute(job, repository);
-        completedJob(job);
-        updateJobDependants(job);
-
-        return;
-      }
-    }
-
-    throw new Error(`Unsupported job type: ${job.type}`);
   }
 
   const readyJobs: Job[] = [...jobsMap.values()].filter(isJobReady);
@@ -135,7 +118,12 @@ function createJobsProcessor(jobs: Job[], log: typeof console.log | null = conso
     processJobs: async () => {
       let job: Job | undefined;
       while ((job = readyJobs.pop()) !== undefined) {
-        await processJob(job);
+        log?.(`Processing job: ${job.id}`);
+
+        await jobProcessor.process(job.id);
+
+        completedJob(job);
+        updateJobDependants(job);
       }
 
       return [...jobsMap.values()];
