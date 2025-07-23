@@ -29,7 +29,7 @@
     "vite": "^6.3.5"
   },
   "dependencies": {
-    "@repo/math-expr": "^0.0.0",
+    "@repo/math-expression": "*",
     "dotenv": "^17.2.0",
     "express": "^5.1.0",
     "source-map-support": "^0.5.21"

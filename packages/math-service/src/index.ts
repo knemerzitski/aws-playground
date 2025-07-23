@@ -1,6 +1,6 @@
 import 'source-map-support/register';
 
-import { MathExpressionError, parseMathExpression } from '@repo/math-expr';
+import { MathExpressionError, parseMathExpression } from '@repo/math-expression';
 import express from 'express';
 import { loadEnv } from './load-env';
 
