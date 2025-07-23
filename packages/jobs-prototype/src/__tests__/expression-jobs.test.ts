@@ -1,30 +1,38 @@
-import { expect, it } from 'vitest';
+import { assert, expect, it } from 'vitest';
 import { Expression, parseExpression } from '@repo/math-expression';
 import { expressionToJobs } from '../expression/expression-to-jobs';
-import { Job, JobFromRegistry } from '../job.types';
-import { ExpressionValue } from '../expression/types';
+import { Job } from '../job.types';
+import {
+  AdditionHandler,
+  DivisionHandler,
+  MultiplicationHandler,
+  NumberLiteralHandler,
+  SubtractionHandler,
+} from '../expression/handlers';
+import { JobHandler, JobRepository } from '../types';
 
-it('should evaluate expression jobs for distributed compute', () => {
-  evaluateExpect('1', 1);
-  evaluateExpect('1 + 5', 6);
-  evaluateExpect('1 + (2 + 10 + 3) * 5', 76);
+it('should evaluate expression jobs for distributed compute', async () => {
+  await evaluateExpect('1', 1);
+  await evaluateExpect('1 + 5', 6);
+  await evaluateExpect('1 + (2 + 10 + 3) * 5', 76);
 });
 
-function evaluateExpect(expressionString: string, expected: number) {
+async function evaluateExpect(expressionString: string, expected: number) {
   const expression = parseExpression(expressionString);
 
   expect(expression.evaluate()).toStrictEqual(expected);
-  expect(distributedEvaluate(expression)).toStrictEqual(expected);
+  await expect(distributedEvaluate(expression)).resolves.toStrictEqual(expected);
 }
 
-function distributedEvaluate(expression: Expression): number {
+async function distributedEvaluate(expression: Expression): Promise<number> {
   const jobs = expressionToJobs(expression);
 
   const struct = createJobsProcessor(jobs, null);
-  struct.processJobs();
+  await struct.processJobs();
 
-  // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
-  return jobs[0]?.result!.value!;
+  assert(jobs[0]?.result?.type === 'number-literal');
+
+  return jobs[0]?.result.value;
 }
 
 function createJobsProcessor(jobs: Job[], log: typeof console.log | null = console.log) {
@@ -45,71 +53,53 @@ function createJobsProcessor(jobs: Job[], log: typeof console.log | null = conso
     }
   }
 
-  function processJob(job: Job) {
+  const repository: JobRepository<Job> = {
+    get: (jobId: string) => Promise.resolve(jobs.find((job) => job.id === jobId)),
+    saveResult: (jobId, result) => {
+      const job = jobs.find((job) => job.id === jobId);
+      if (job === undefined) {
+        throw new Error(`Save failed, job doesn't exist: ${jobId}`);
+      }
+
+      job.status = 'completed';
+      job.result = result;
+
+      return Promise.resolve();
+    },
+  };
+
+  const jobHandlers: JobHandler<Job>[] = [
+    new AdditionHandler(),
+    new SubtractionHandler(),
+    new MultiplicationHandler(),
+    new DivisionHandler(),
+    new NumberLiteralHandler(),
+  ];
+
+  function isJobReady<T extends Job>(
+    job: T
+  ): job is T & { status: 'pending' | 'failed' } {
+    return job.status === 'pending' || job.status === 'failed';
+  }
+
+  async function processJob(job: Job) {
+    if (!isJobReady(job)) {
+      throw new Error(`Cannot process unready job: ${job.id}`);
+    }
+
     log?.(`Processing job: ${job.id}`);
-    if (job.type === 'math:addition') {
-      handleAddition(job);
-    } else if (job.type === 'math:multiplication') {
-      handleMultiplication(job);
-    } else if (job.type === 'math:number-literal') {
-      handleNumberLiteral(job);
-    } else {
-      throw new Error(`Unsupported job type: ${job.type}`);
-    }
-  }
 
-  function handleAddition(job: JobFromRegistry<'math:addition'>) {
-    const left = evalExprValue(job.payload.left);
-    const right = evalExprValue(job.payload.right);
+    for (const handler of jobHandlers) {
+      if (handler.canHandle(job)) {
+        await handler.execute(job, repository);
+        completedJob(job);
+        updateJobDependants(job);
 
-    const computationResult = left.value + right.value;
-
-    job.status = 'completed';
-    job.result = {
-      type: 'number-literal',
-      value: computationResult,
-    };
-    completedJob(job);
-    updateJobDependants(job);
-  }
-
-  function handleMultiplication(job: JobFromRegistry<'math:multiplication'>) {
-    const left = evalExprValue(job.payload.left);
-    const right = evalExprValue(job.payload.right);
-
-    const computationResult = left.value * right.value;
-
-    job.status = 'completed';
-    job.result = {
-      type: 'number-literal',
-      value: computationResult,
-    };
-    completedJob(job);
-    updateJobDependants(job);
-  }
-
-  function handleNumberLiteral(job: JobFromRegistry<'math:number-literal'>) {
-    job.status = 'completed';
-    job.result = job.payload;
-    completedJob(job);
-    updateJobDependants(job);
-  }
-
-  function evalExprValue(expr: ExpressionValue) {
-    if (expr.type === 'number-literal') {
-      return expr;
+        return;
+      }
     }
 
-    const job = jobs.find((job) => job.id === expr.value);
-    if (!job) {
-      throw new Error(`Job not found: ${expr.value}`);
-    }
-
-    if (job.status !== 'completed') {
-      throw new Error(`Attempted to access result of an incomplete job: ${job.id}`);
-    }
-
-    return job.result;
+    throw new Error(`Unsupported job type: ${job.type}`);
   }
 
   const readyJobs = jobs.filter(
@@ -117,10 +107,10 @@ function createJobsProcessor(jobs: Job[], log: typeof console.log | null = conso
   );
 
   return {
-    processJobs: () => {
+    processJobs: async () => {
       let job: Job | undefined;
       while ((job = readyJobs.pop()) !== undefined) {
-        processJob(job);
+        await processJob(job);
       }
     },
   };
