@@ -16,12 +16,10 @@ type DistributiveJobFromRegistry<T extends keyof JobRegistry> = T extends any
 
 type BinaryOperationJobs = DistributiveJobFromRegistry<BinaryOperationJobTypes>;
 
-abstract class BinaryOperationHandler<
-  TJob extends BinaryOperationJobs,
-  TJobType = TJob['type'],
-> implements JobHandler<TJob>
+abstract class BinaryOperationHandler<TJob extends BinaryOperationJobs>
+  implements JobHandler<TJob>
 {
-  constructor(private readonly type: TJobType) {}
+  constructor(private readonly type: TJob['type']) {}
 
   abstract evaluate(left: number, right: number): number;
 
