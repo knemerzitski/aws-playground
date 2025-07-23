@@ -10,24 +10,24 @@ import {
 declare module '../job.registry' {
   interface JobRegistry {
     'math:number-literal': {
-      payload: NumberLiteralValue;
-      result: ExpressionResult;
+      readonly payload: NumberLiteralValue;
+      readonly result: ExpressionResult;
     };
     'math:addition': {
-      payload: AdditionBinaryExpressionPayload;
-      result: ExpressionResult;
+      readonly payload: AdditionBinaryExpressionPayload;
+      readonly result: ExpressionResult;
     };
     'math:subtraction': {
-      payload: SubtractionBinaryExpressionPayload;
-      result: ExpressionResult;
+      readonly payload: SubtractionBinaryExpressionPayload;
+      readonly result: ExpressionResult;
     };
     'math:multiplication': {
-      payload: MultiplicationBinaryExpressionPayload;
-      result: ExpressionResult;
+      readonly payload: MultiplicationBinaryExpressionPayload;
+      readonly result: ExpressionResult;
     };
     'math:division': {
-      payload: DivisionBinaryExpressionPayload;
-      result: ExpressionResult;
+      readonly payload: DivisionBinaryExpressionPayload;
+      readonly result: ExpressionResult;
     };
   }
 }
