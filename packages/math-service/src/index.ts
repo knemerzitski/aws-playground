@@ -1,6 +1,6 @@
 import 'source-map-support/register';
 
-import { MathExpressionError, parseMathExpression } from '@repo/math-expression';
+import { ExpressionError, parseExpression } from '@repo/math-expression';
 import express from 'express';
 import { loadEnv } from './load-env';
 
@@ -11,25 +11,25 @@ const PORT = process.env.SERVICE_PORT ?? 3000;
 const app = express();
 
 app.get('/eval', (req, res) => {
-  const { expr } = req.query;
+  const { expr: exprString } = req.query;
 
-  if (typeof expr !== 'string') {
+  if (typeof exprString !== 'string') {
     return res.status(400).json({
       error: 'Missing required query parameter: expr',
     });
   }
 
   try {
-    const expressionTree = parseMathExpression(expr);
+    const expressionTree = parseExpression(exprString);
     const result = expressionTree.evaluate();
 
-    console.debug(`Calculated expression: ${expr} = ${result}`);
+    console.debug(`Calculated expression: ${exprString} = ${result}`);
 
     return res.status(200).json({
       result,
     });
   } catch (err) {
-    if (err instanceof MathExpressionError) {
+    if (err instanceof ExpressionError) {
       return res.status(400).json({
         error: err.message,
       });

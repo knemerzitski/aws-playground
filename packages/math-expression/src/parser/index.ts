@@ -4,12 +4,12 @@ import {
   getOperatorBinaryExpressionConstructor,
   isBinaryExpressionAssociative,
 } from './binary-expression';
-import { MathExpressionError } from '../errors';
+import { ExpressionError } from '../errors';
 import { LeftParenToken, RIGHT_PAREN, Token, tokenizeString } from '../lexer';
 import { Expression } from './expression';
 import { Literal, NumberLiteral } from './literal';
 
-export class ParserError extends MathExpressionError {}
+export class ParserError extends ExpressionError {}
 
 export class EndOfTokensParserError extends ParserError {
   constructor() {

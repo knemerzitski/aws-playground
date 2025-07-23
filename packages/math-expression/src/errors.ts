@@ -1,1 +1,1 @@
-export class MathExpressionError extends Error {}
+export class ExpressionError extends Error {}
