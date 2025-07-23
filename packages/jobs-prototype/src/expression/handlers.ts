@@ -1,5 +1,5 @@
 import { JobRegistry } from '../job.registry';
-import { Job, JobFromRegistry } from '../job.types';
+import { IncompleteJob, Job, JobFromRegistry } from '../job.types';
 import { JobHandler, JobRepository } from '../types';
 import { ExpressionValue, NumberLiteralValue } from './types';
 
@@ -27,10 +27,7 @@ abstract class BinaryOperationHandler<TJob extends BinaryOperationJobs>
     return this.type === job.type;
   }
 
-  async execute(
-    job: TJob & { status: 'pending' | 'failed' },
-    repo: JobRepository<TJob>
-  ): Promise<void> {
+  async execute(job: IncompleteJob<TJob>, repo: JobRepository<TJob>): Promise<void> {
     const payload = job.payload;
 
     const [left, right] = await Promise.all([
@@ -133,10 +130,7 @@ export class NumberLiteralHandler<
     return job.type === 'math:number-literal';
   }
 
-  async execute(
-    job: TJob & { status: 'pending' | 'failed' },
-    repo: JobRepository<TJob>
-  ): Promise<void> {
+  async execute(job: IncompleteJob<TJob>, repo: JobRepository<TJob>): Promise<void> {
     const computationResult = job.payload;
 
     await repo.saveResult(job.id, computationResult);

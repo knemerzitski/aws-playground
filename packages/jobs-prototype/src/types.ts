@@ -1,4 +1,4 @@
-import { Job } from './job.types';
+import { IncompleteJob, Job } from './job.types';
 
 export interface JobRepository<TJob extends Job> {
   get(jobId: string): Promise<Job | undefined>;
@@ -7,8 +7,5 @@ export interface JobRepository<TJob extends Job> {
 
 export interface JobHandler<TJob extends Job> {
   canHandle(job: Job): job is TJob;
-  execute(
-    job: TJob & { status: 'pending' | 'failed' },
-    repository: JobRepository<TJob>
-  ): Promise<void>;
+  execute(job: IncompleteJob<TJob>, repository: JobRepository<TJob>): Promise<void>;
 }

@@ -1,7 +1,7 @@
 import { assert, expect, it } from 'vitest';
 import { Expression, parseExpression } from '@repo/math-expression';
 import { expressionToJobs } from '../expression/expression-to-jobs';
-import { Job } from '../job.types';
+import { Job, ReadyJob } from '../job.types';
 import {
   AdditionHandler,
   DivisionHandler,
@@ -76,10 +76,8 @@ function createJobsProcessor(jobs: Job[], log: typeof console.log | null = conso
     new NumberLiteralHandler(),
   ];
 
-  function isJobReady<T extends Job>(
-    job: T
-  ): job is T & { status: 'pending' | 'failed' } {
-    return job.status === 'pending' || job.status === 'failed';
+  function isJobReady<T extends Job>(job: T): job is ReadyJob<T> {
+    return job.status === 'pending';
   }
 
   async function processJob(job: Job) {
