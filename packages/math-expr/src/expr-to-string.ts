@@ -6,9 +6,9 @@ import {
 import { Expression } from './parser/expression';
 import { Literal } from './parser/literal';
 
-export function expressionToString(expression: Expression): string {
+export function stringifyExpression(expression: Expression): string {
   if (expression instanceof BinaryExpression) {
-    return `${LEFT_PAREN}${expressionToString(expression.left)} ${getBinaryExpressionOperator(expression)} ${expressionToString(expression.right)}${RIGHT_PAREN}`;
+    return `${LEFT_PAREN}${stringifyExpression(expression.left)} ${getBinaryExpressionOperator(expression)} ${stringifyExpression(expression.right)}${RIGHT_PAREN}`;
   } else if (expression instanceof Literal) {
     return String(expression.evaluate());
   } else {
