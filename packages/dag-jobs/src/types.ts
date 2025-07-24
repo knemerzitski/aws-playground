@@ -10,3 +10,7 @@ export interface JobHandler<TJob extends Job = Job> {
   canHandle(job: Job): job is TJob;
   execute(job: TJob, repository: JobRepository<TJob>): Promise<void>;
 }
+
+export interface DependencyResolver {
+  resolveDependencies(complatedJobId: string): Promise<boolean>;
+}
