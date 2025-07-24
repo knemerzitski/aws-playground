@@ -37,10 +37,15 @@ abstract class BinaryOperationHandler<TJob extends BinaryOperationJobs>
 
     const computationResult = this.evaluate(left.value, right.value);
 
-    await repo.saveResult(job.id, {
+    const wasSaved = await repo.saveResult(job.id, {
       type: 'number-literal',
       value: computationResult,
     });
+    if (!wasSaved) {
+      const err = new Error('Failed to save job result');
+      // log.error(err, 'Could not persist computation result');
+      throw err;
+    }
   }
 
   private async evalValue(
@@ -134,5 +139,12 @@ export class NumberLiteralHandler<
     const computationResult = job.payload;
 
     await repo.saveResult(job.id, computationResult);
+
+    const wasSaved = await repo.saveResult(job.id, computationResult);
+    if (!wasSaved) {
+      const err = new Error('Failed to save job result');
+      // log.error(err, 'Could not persist computation result');
+      throw err;
+    }
   }
 }

@@ -55,7 +55,19 @@ export class JobProcessor {
     } catch (err) {
       const errorObj = err instanceof Error ? err : new Error(String(err));
       log.error(errorObj, 'Job execution failed');
-      await this.repository.markFailed(jobId, errorObj.message);
+
+      try {
+        const wasFailMarked = await this.repository.markFailed(jobId, errorObj.message);
+        if (!wasFailMarked) {
+          log.error('Failed to persist job failure status in repository');
+        }
+      } catch (markErr) {
+        log.error(
+          markErr instanceof Error ? markErr : new Error(String(markErr)),
+          'Error while marking job as failed'
+        );
+      }
+
       throw errorObj;
     }
   }

@@ -9,11 +9,12 @@ import {
   NumberLiteralHandler,
   SubtractionHandler,
 } from '../expression/handlers';
-import { JobHandler, JobRepository } from '../types';
+import { JobHandler } from '../types';
 import { JobProcessor } from '../job-processor';
 import { Logger, PinoLogger } from '@repo/logger';
 import pino from 'pino';
 import pinoPretty from 'pino-pretty';
+import { InMemoryJobRepository } from '../in-memory-job-repository';
 
 it('should evaluate expression jobs for distributed compute', async () => {
   await evaluateExpect('1', 1);
@@ -41,23 +42,21 @@ async function distributedEvaluate(expression: Expression): Promise<number> {
 }
 
 function createJobsProcessor(jobs: Job[], log: typeof console.log | null = console.log) {
-  const jobsMap = new Map<string, Job>(jobs.map((job) => [job.id, job]));
-
   function completedJob(_job: Job) {
     log?.(`Job completed`);
   }
 
   function updateJobDependants(completedJob: Job) {
-    const dependents = [...jobsMap.values()].filter((job) =>
-      job.dependencies.includes(completedJob.id)
-    );
+    const dependents = jobRepository
+      .getAllJobs()
+      .filter((job) => job.dependencies.includes(completedJob.id));
     log?.(`Updating dependants`);
     for (const dep of dependents) {
       const updatedJob: Job = {
         ...dep,
         incompleteDependenciesCount: dep.incompleteDependenciesCount - 1,
       };
-      jobsMap.set(dep.id, updatedJob);
+      jobRepository.setJob(updatedJob);
 
       if (updatedJob.incompleteDependenciesCount === 0) {
         log?.(`Ready to process: ${updatedJob.id}`);
@@ -65,41 +64,6 @@ function createJobsProcessor(jobs: Job[], log: typeof console.log | null = conso
       }
     }
   }
-
-  const jobRepository: JobRepository<Job> = {
-    get: (jobId: string) => Promise.resolve(jobsMap.get(jobId)),
-    saveResult: (jobId, result) => {
-      const job = jobsMap.get(jobId);
-      if (job === undefined) {
-        throw new Error(`Save failed, job doesn't exist: ${jobId}`);
-      }
-
-      jobsMap.set(job.id, {
-        ...job,
-        status: 'completed',
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any
-        result: result as any,
-      });
-
-      return Promise.resolve();
-    },
-    markFailed: (jobId, message) => {
-      const job = jobsMap.get(jobId);
-      if (job === undefined) {
-        throw new Error(`Mark job failed, job doesn't exist: ${jobId}`);
-      }
-
-      jobsMap.set(job.id, {
-        ...job,
-        status: 'failed',
-        result: null,
-        failedAt: new Date().toISOString(),
-        failureReason: message,
-      });
-
-      return Promise.resolve();
-    },
-  };
 
   const logger: Logger = new PinoLogger(
     pino(
@@ -109,7 +73,9 @@ function createJobsProcessor(jobs: Job[], log: typeof console.log | null = conso
       })
     )
   );
-  logger.setLevel('debug');
+  logger.setLevel('info');
+
+  const jobRepository = new InMemoryJobRepository(jobs);
 
   const jobHandlers: JobHandler<Job>[] = [
     new AdditionHandler(),
@@ -121,9 +87,9 @@ function createJobsProcessor(jobs: Job[], log: typeof console.log | null = conso
 
   const jobProcessor = new JobProcessor(jobHandlers, jobRepository, logger);
 
-  const readyJobs: Job[] = [...jobsMap.values()].filter(
-    (job) => job.status === 'pending' && job.incompleteDependenciesCount === 0
-  );
+  const readyJobs: Job[] = jobRepository
+    .getAllJobs()
+    .filter((job) => job.status === 'pending' && job.incompleteDependenciesCount === 0);
 
   return {
     processJobs: async () => {
@@ -137,7 +103,7 @@ function createJobsProcessor(jobs: Job[], log: typeof console.log | null = conso
         updateJobDependants(job);
       }
 
-      return [...jobsMap.values()];
+      return jobRepository.getAllJobs();
     },
   };
 }
