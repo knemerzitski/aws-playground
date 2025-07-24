@@ -5,7 +5,7 @@ interface JobBase {
   readonly id: string;
   readonly parentId?: string;
   readonly dependencies: string[];
-  readonly incompleteDependenciesCount: number;
+  readonly unresolvedDependencies: number;
   readonly status: 'pending' | 'in-progress' | 'completed' | 'failed';
   // version?: number;
   // metrics: {

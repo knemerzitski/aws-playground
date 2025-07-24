@@ -28,13 +28,13 @@ export class JobProcessor {
       throw err;
     }
 
-    if (job.incompleteDependenciesCount > 0) {
+    if (job.unresolvedDependencies > 0) {
       const err = new Error('Job has incomplete dependencies');
       log.error(
         {
           err,
           jobDependencies: job.dependencies,
-          incompleteDependenciesCount: job.incompleteDependenciesCount,
+          unresolvedDependenciesCount: job.unresolvedDependencies,
         },
         'Cannot process job until dependencies are completed'
       );
