@@ -11,6 +11,9 @@ import {
 } from '../expression/handlers';
 import { JobHandler, JobRepository } from '../types';
 import { JobProcessor } from '../job-processor';
+import { Logger, PinoLogger } from '@repo/logger';
+import pino from 'pino';
+import pinoPretty from 'pino-pretty';
 
 it('should evaluate expression jobs for distributed compute', async () => {
   await evaluateExpect('1', 1);
@@ -98,6 +101,16 @@ function createJobsProcessor(jobs: Job[], log: typeof console.log | null = conso
     },
   };
 
+  const logger: Logger = new PinoLogger(
+    pino(
+      pinoPretty({
+        sync: true,
+        colorize: true,
+      })
+    )
+  );
+  logger.setLevel('debug');
+
   const jobHandlers: JobHandler<Job>[] = [
     new AdditionHandler(),
     new SubtractionHandler(),
@@ -106,7 +119,7 @@ function createJobsProcessor(jobs: Job[], log: typeof console.log | null = conso
     new NumberLiteralHandler(),
   ];
 
-  const jobProcessor = new JobProcessor(jobHandlers, jobRepository);
+  const jobProcessor = new JobProcessor(jobHandlers, jobRepository, logger);
 
   function isJobReady<T extends Job>(job: T): job is ReadyJob<T> {
     return job.status === 'pending' && job.incompleteDependenciesCount === 0;
