@@ -1,20 +1,17 @@
 import { assert, expect, it } from 'vitest';
 import { Expression, parseExpression } from '@repo/math-expression';
-import { expressionToJobs } from '../expression/expression-to-jobs';
-import { Job } from '../job.types';
+import { expressionToJobs } from '../expression-to-jobs';
 import {
   AdditionHandler,
   DivisionHandler,
   MultiplicationHandler,
   NumberLiteralHandler,
   SubtractionHandler,
-} from '../expression/handlers';
-import { JobHandler } from '../types';
-import { JobProcessor } from '../job-processor';
+} from '../handlers';
 import { Logger, PinoLogger } from '@repo/logger';
 import pino from 'pino';
 import pinoPretty from 'pino-pretty';
-import { InMemoryJobRepository } from '../in-memory-job-repository';
+import { InMemoryJobRepository, Job, JobHandler, JobProcessor } from '@repo/dag-jobs';
 
 it('should evaluate expression jobs for distributed compute', async () => {
   await evaluateExpect('1', 1);

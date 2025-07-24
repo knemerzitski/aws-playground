@@ -7,7 +7,7 @@ import {
 } from '@repo/math-expression';
 import { randomUUID } from 'crypto';
 import { BinaryExpressionBasePayload, Operator as NamedOperator } from './types';
-import { Job } from '../job.types';
+import { Job } from '@repo/dag-jobs';
 
 const TO_NAMED_OPERATOR: Record<Operator, NamedOperator> = {
   '+': 'addition',

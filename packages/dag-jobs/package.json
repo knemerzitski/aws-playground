@@ -1,5 +1,5 @@
 {
-  "name": "@repo/jobs-prototype",
+  "name": "@repo/dag-jobs",
   "version": "0.0.0",
   "private": "true",
   "type": "module",
@@ -17,13 +17,10 @@
     "@repo/eslint-config": "*",
     "@repo/typescript-config": "*",
     "eslint": "^9.31.0",
-    "pino-pretty": "^13.0.0",
     "typescript": "^5.8.3",
     "vitest": "^3.2.4"
   },
   "dependencies": {
-    "@repo/logger": "*",
-    "@repo/math-expression": "*",
-    "pino": "^9.7.0"
+    "@repo/logger": "*"
   }
 }

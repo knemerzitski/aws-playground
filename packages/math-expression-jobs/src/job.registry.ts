@@ -7,7 +7,7 @@ import {
   SubtractionBinaryExpressionPayload,
 } from './types';
 
-declare module '../job.registry' {
+declare module '@repo/dag-jobs' {
   interface JobRegistry {
     'math:number-literal': {
       readonly payload: NumberLiteralValue;

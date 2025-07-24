@@ -1,6 +1,10 @@
-import { JobRegistry } from '../job.registry';
-import { Job, JobFromRegistry } from '../job.types';
-import { JobHandler, JobRepository } from '../types';
+import {
+  Job,
+  JobFromRegistry,
+  JobHandler,
+  JobRegistry,
+  JobRepository,
+} from '@repo/dag-jobs';
 import { ExpressionValue, NumberLiteralValue } from './types';
 
 type BinaryOperationJobTypes =
