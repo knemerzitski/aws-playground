@@ -11,7 +11,8 @@ export interface Logger {
    * - Database connection failed at startup and the app cannot proceed.
    * - An uncaught exception causes the app to exit.
    */
-  fatal: LogFn;
+  fatal(obj: unknown, msg?: string, ...args: any[]): void;
+  fatal(msg: string, ...args: any[]): void;
 
   /**
    * Operation failed due to a bug, exception, or service failure.
@@ -23,7 +24,8 @@ export interface Logger {
    * - Payment gateway returned an error.
    * - Unexpected exception in business logic.
    */
-  error: LogFn;
+  error(obj: unknown, msg?: string, ...args: any[]): void;
+  error(msg: string, ...args: any[]): void;
 
   /**
    * Unexpected but non-critical issues (e.g., invalid input, soft failures).
@@ -35,7 +37,8 @@ export interface Logger {
    * - Rate limit exceeded.
    * - Fallback triggered (e.g., default locale loaded because preferred one was missing).
    */
-  warn: LogFn;
+  warn(obj: unknown, msg?: string, ...args: any[]): void;
+  warn(msg: string, ...args: any[]): void;
 
   /**
    * Expected business events, such as user actions or app state changes.
@@ -45,7 +48,9 @@ export interface Logger {
    * - User signed up.
    * - Payment successful.
    */
-  info: LogFn;
+  info(obj: unknown, msg?: string, ...args: any[]): void;
+
+  info(msg: string, ...args: any[]): void;
 
   /**
    * Internal logic useful for debugging; typically less frequent in production.
@@ -54,7 +59,8 @@ export interface Logger {
    * - API response time.
    * - Calculated values or DB query results.
    */
-  debug: LogFn;
+  debug(obj: unknown, msg?: string, ...args: any[]): void;
+  debug(msg: string, ...args: any[]): void;
 
   /**
    * Detailed debug logs for deep-dive troubleshooting; very verbose.
@@ -65,7 +71,8 @@ export interface Logger {
    * - Entering/exiting functions.
    * - Loop iterations or recursive steps.
    */
-  trace: LogFn;
+  trace(obj: unknown, msg?: string, ...args: any[]): void;
+  trace(msg: string, ...args: any[]): void;
 
   child(bindings: Bindings): Logger;
 
@@ -76,8 +83,3 @@ export type Bindings = Record<string, any>;
 
 export type Level = 'fatal' | 'error' | 'warn' | 'info' | 'debug' | 'trace';
 export type LevelWithSilent = Level | 'silent';
-
-export interface LogFn {
-  (obj: unknown, msg?: string, ...args: any[]): void;
-  (msg: string, ...args: any[]): void;
-}

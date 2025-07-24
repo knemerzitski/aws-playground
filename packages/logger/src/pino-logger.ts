@@ -1,6 +1,6 @@
 import pino from 'pino';
 
-import { Bindings, LevelWithSilent, LogFn, Logger } from './types';
+import { Bindings, LevelWithSilent, Logger } from './types';
 
 export class PinoLogger implements Logger {
   constructor(private readonly logger: ReturnType<typeof pino>) {}
@@ -11,37 +11,37 @@ export class PinoLogger implements Logger {
 
   fatal(obj: unknown, msg?: string, ...args: any[]): void;
   fatal(msg: string, ...args: any[]): void;
-  fatal(...args: Parameters<LogFn>): void {
+  fatal(...args: Parameters<pino.Logger['fatal']>): void {
     this.logger.fatal(...args);
   }
 
   error(obj: unknown, msg?: string, ...args: any[]): void;
   error(msg: string, ...args: any[]): void;
-  error(...args: Parameters<LogFn>): void {
+  error(...args: Parameters<pino.Logger['error']>): void {
     this.logger.error(...args);
   }
 
   warn(obj: unknown, msg?: string, ...args: any[]): void;
   warn(msg: string, ...args: any[]): void;
-  warn(...args: Parameters<LogFn>): void {
+  warn(...args: Parameters<pino.Logger['warn']>): void {
     this.logger.warn(...args);
   }
 
   info(obj: unknown, msg?: string, ...args: any[]): void;
   info(msg: string, ...args: any[]): void;
-  info(...args: Parameters<LogFn>): void {
+  info(...args: Parameters<pino.Logger['info']>): void {
     this.logger.info(...args);
   }
 
   debug(obj: unknown, msg?: string, ...args: any[]): void;
   debug(msg: string, ...args: any[]): void;
-  debug(...args: Parameters<LogFn>): void {
+  debug(...args: Parameters<pino.Logger['debug']>): void {
     this.logger.debug(...args);
   }
 
   trace(obj: unknown, msg?: string, ...args: any[]): void;
   trace(msg: string, ...args: any[]): void;
-  trace(...args: Parameters<LogFn>): void {
+  trace(...args: Parameters<pino.Logger['trace']>): void {
     this.logger.trace(...args);
   }
 
