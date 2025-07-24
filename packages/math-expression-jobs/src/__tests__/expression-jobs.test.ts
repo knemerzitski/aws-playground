@@ -82,7 +82,11 @@ function createJobsProcessor(jobs: Job[], log: typeof console.log | null = conso
     new NumberLiteralHandler(),
   ];
 
-  const jobProcessor = new JobProcessor(jobHandlers, jobRepository, logger);
+  const jobProcessor = new JobProcessor({
+    handlers: jobHandlers,
+    repository: jobRepository,
+    logger,
+  });
 
   const readyJobs: Job[] = jobRepository
     .getAllJobs()

@@ -5,15 +5,25 @@ import { JobRepository } from '../interfaces/job-repository';
 import { JobResultResolver } from '../interfaces/job-result-resolver';
 import { RepositoryJobResultResolver } from '../adapters/repository-job-result-resolver';
 
+interface JobProcessorDependencies {
+  readonly handlers: JobHandler[];
+  readonly repository: JobRepository;
+  readonly logger?: Logger;
+  readonly resolver?: JobResultResolver;
+}
+
 export class JobProcessor {
-  constructor(
-    private readonly handlers: JobHandler<Job>[],
-    private readonly repository: JobRepository<Job>,
-    private readonly logger: Logger = new NoopLogger(),
-    private readonly resolver: JobResultResolver = new RepositoryJobResultResolver(
-      repository
-    )
-  ) {}
+  private readonly handlers;
+  private readonly repository;
+  private readonly logger;
+  private readonly resolver;
+
+  constructor({ handlers, repository, logger, resolver }: JobProcessorDependencies) {
+    this.handlers = handlers;
+    this.repository = repository;
+    this.logger = logger ?? new NoopLogger();
+    this.resolver = resolver ?? new RepositoryJobResultResolver(repository);
+  }
 
   async process(jobId: string) {
     const log = this.logger.child({ jobId });
