@@ -94,10 +94,15 @@ function createJobsProcessor(jobs: Job[], log: typeof console.log | null = conso
       while ((job = readyJobs.pop()) !== undefined) {
         log?.(`Processing job: ${job.id}`);
 
-        await jobProcessor.process(job.id);
+        try {
+          await jobProcessor.process(job.id);
 
-        completedJob(job);
-        updateJobDependants(job);
+          completedJob(job);
+          updateJobDependants(job);
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        } catch (_err) {
+          // keep processing other jobs
+        }
       }
 
       return jobRepository.getAllJobs();

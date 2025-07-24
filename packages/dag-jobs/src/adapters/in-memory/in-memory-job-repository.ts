@@ -20,7 +20,22 @@ export class InMemoryJobRepository implements JobRepository {
     return Promise.resolve(this.jobById.get(jobId));
   }
 
-  saveResult(jobId: string, result: Job['result']): Promise<boolean> {
+  markInProgress(jobId: string): Promise<boolean> {
+    const job = this.jobById.get(jobId);
+    if (job === undefined) {
+      return Promise.resolve(false);
+    }
+
+    this.jobById.set(job.id, {
+      ...job,
+      status: 'in-progress',
+      result: null,
+    });
+
+    return Promise.resolve(true);
+  }
+
+  saveResultAndMarkCompleted(jobId: string, result: Job['result']): Promise<boolean> {
     const job = this.jobById.get(jobId);
     if (job === undefined) {
       return Promise.resolve(false);

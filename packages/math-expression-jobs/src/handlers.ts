@@ -3,7 +3,7 @@ import {
   JobFromRegistry,
   JobHandler,
   JobRegistry,
-  JobRepository,
+  JobResultResolver,
 } from '@repo/dag-jobs';
 import { ExpressionValue, NumberLiteralValue } from './types';
 
@@ -27,58 +27,42 @@ abstract class BinaryOperationHandler<TJob extends BinaryOperationJobs>
 
   abstract evaluate(left: number, right: number): number;
 
-  canHandle(job: Job): job is TJob {
+  canHandle(job: Pick<Job, 'type'>): job is TJob {
     return this.type === job.type;
   }
 
-  async execute(job: TJob, repo: JobRepository<TJob>): Promise<void> {
-    const payload = job.payload;
-
+  async execute(
+    payload: TJob['payload'],
+    resolver: JobResultResolver
+  ): Promise<NonNullable<TJob['result']>> {
     const [left, right] = await Promise.all([
-      this.evalValue(payload.left, repo),
-      this.evalValue(payload.right, repo),
+      this.evalValue(payload.left, resolver),
+      this.evalValue(payload.right, resolver),
     ]);
 
-    const computationResult = this.evaluate(left.value, right.value);
-
-    const wasSaved = await repo.saveResult(job.id, {
+    return {
       type: 'number-literal',
-      value: computationResult,
-    });
-    if (!wasSaved) {
-      const err = new Error('Failed to save job result');
-      // log.error(err, 'Could not persist computation result');
-      throw err;
-    }
+      value: this.evaluate(left.value, right.value),
+    };
   }
 
   private async evalValue(
     expr: ExpressionValue,
-    repo: JobRepository<TJob>
+    resolver: JobResultResolver
   ): Promise<NumberLiteralValue> {
     if (expr.type === 'number-literal') {
       return expr;
     }
 
-    const job = await repo.get(expr.value);
-    if (!job) {
+    const jobResult = await resolver.getResult(expr.value);
+
+    if (jobResult.type !== 'number-literal') {
       throw new Error(
-        `Failed to evaluate expression: referenced job not found (${expr.value})`
-      );
-    }
-    if (job.status !== 'completed') {
-      throw new Error(
-        `Cannot evaluate expression: job ${expr.value} is not completed (status: ${job.status})`
+        `Invalid job result type for ${expr.value}: expected "number-literal", got "${jobResult.type}"`
       );
     }
 
-    if (job.result.type !== 'number-literal') {
-      throw new Error(
-        `Invalid job result type for ${expr.value}: expected "number-literal", got "${job.result.type}"`
-      );
-    }
-
-    return job.result;
+    return jobResult;
   }
 }
 
@@ -135,20 +119,11 @@ export class NumberLiteralHandler<
     JobFromRegistry<'math:number-literal'> = JobFromRegistry<'math:number-literal'>,
 > implements JobHandler<TJob>
 {
-  canHandle(job: Job): job is TJob {
+  canHandle(job: Pick<Job, 'type'>): job is TJob {
     return job.type === 'math:number-literal';
   }
 
-  async execute(job: TJob, repo: JobRepository<TJob>): Promise<void> {
-    const computationResult = job.payload;
-
-    await repo.saveResult(job.id, computationResult);
-
-    const wasSaved = await repo.saveResult(job.id, computationResult);
-    if (!wasSaved) {
-      const err = new Error('Failed to save job result');
-      // log.error(err, 'Could not persist computation result');
-      throw err;
-    }
+  execute(payload: TJob['payload']): Promise<NonNullable<TJob['result']>> {
+    return Promise.resolve(payload);
   }
 }

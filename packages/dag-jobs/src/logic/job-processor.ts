@@ -2,12 +2,17 @@ import { Logger, NoopLogger } from '@repo/logger';
 import { Job } from '../core/job';
 import { JobHandler } from '../interfaces/job-handler';
 import { JobRepository } from '../interfaces/job-repository';
+import { JobResultResolver } from '../interfaces/job-result-resolver';
+import { RepositoryJobResultResolver } from '../adapters/repository-job-result-resolver';
 
 export class JobProcessor {
   constructor(
     private readonly handlers: JobHandler<Job>[],
     private readonly repository: JobRepository<Job>,
-    private readonly logger: Logger = new NoopLogger()
+    private readonly logger: Logger = new NoopLogger(),
+    private readonly resolver: JobResultResolver = new RepositoryJobResultResolver(
+      repository
+    )
   ) {}
 
   async process(jobId: string) {
@@ -51,7 +56,22 @@ export class JobProcessor {
 
     try {
       log.debug('Starting job execution');
-      await handler.execute(job, this.repository);
+      const wasInProgressMarked = await this.repository.markInProgress(job.id);
+      if (!wasInProgressMarked) {
+        const err = new Error('Failed to mark job as in-progress');
+        log.error(err, 'Failed to mark job as in-progress in repository');
+        throw err;
+      }
+
+      const result = await handler.execute(job.payload, this.resolver);
+
+      const wasSaved = await this.repository.saveResultAndMarkCompleted(job.id, result);
+      if (!wasSaved) {
+        const err = new Error('Failed to save job result');
+        log.error(err, 'Failed to save job result and mark as completed in repository');
+        throw err;
+      }
+
       log.debug('Job execution completed');
     } catch (err) {
       const errorObj = err instanceof Error ? err : new Error(String(err));
@@ -60,12 +80,15 @@ export class JobProcessor {
       try {
         const wasFailMarked = await this.repository.markFailed(jobId, errorObj.message);
         if (!wasFailMarked) {
-          log.error('Failed to persist job failure status in repository');
+          log.fatal('Failed to persist job failure status in repository');
         }
       } catch (markErr) {
-        log.error(
-          markErr instanceof Error ? markErr : new Error(String(markErr)),
-          'Error while marking job as failed'
+        log.fatal(
+          {
+            err: markErr instanceof Error ? markErr : new Error(String(markErr)),
+            originalError: errorObj,
+          },
+          'CRITICAL: Error while marking job as failed'
         );
       }
 

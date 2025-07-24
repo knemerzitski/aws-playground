@@ -1,8 +1,10 @@
 import { Job } from '../core/job';
-import { JobRepository } from './job-repository';
-
+import { JobResultResolver } from './job-result-resolver';
 
 export interface JobHandler<TJob extends Job = Job> {
-  canHandle(job: Job): job is TJob;
-  execute(job: TJob, repository: JobRepository<TJob>): Promise<void>;
+  canHandle(job: Pick<Job, 'type'>): job is TJob;
+  execute(
+    payload: TJob['payload'],
+    resolver: JobResultResolver
+  ): Promise<NonNullable<TJob['result']>>;
 }
