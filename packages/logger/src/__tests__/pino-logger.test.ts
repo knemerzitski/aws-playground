@@ -83,7 +83,7 @@ it('should log object with message', async () => {
   expect(parsed.msg).toBe('some info');
 });
 
-it('creates child logger with bindings', async () => {
+it('should create child logger with bindings', async () => {
   const child = logger.child({ jobId: 'abc123' });
   child.info('starting job');
 
