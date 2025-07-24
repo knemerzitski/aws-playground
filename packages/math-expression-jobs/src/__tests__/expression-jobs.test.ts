@@ -51,11 +51,11 @@ function createJobsProcessor(jobs: Job[], log: typeof console.log | null = conso
     for (const dep of dependents) {
       const updatedJob: Job = {
         ...dep,
-        unresolvedDependencies: dep.unresolvedDependencies - 1,
+        completedDependencies: [...dep.completedDependencies, completedJob.id],
       };
       jobRepository.setJob(updatedJob);
 
-      if (updatedJob.unresolvedDependencies === 0) {
+      if (updatedJob.dependencies.length === updatedJob.completedDependencies.length) {
         log?.(`Ready to process: ${updatedJob.id}`);
         readyJobs.push(updatedJob);
       }
@@ -90,7 +90,11 @@ function createJobsProcessor(jobs: Job[], log: typeof console.log | null = conso
 
   const readyJobs: Job[] = jobRepository
     .getAllJobs()
-    .filter((job) => job.status === 'pending' && job.unresolvedDependencies === 0);
+    .filter(
+      (job) =>
+        job.status === 'pending' &&
+        job.dependencies.length === job.completedDependencies.length
+    );
 
   return {
     processJobs: async () => {

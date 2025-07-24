@@ -1,5 +1,4 @@
 import { Logger, NoopLogger } from '@repo/logger';
-import { Job } from '../core/job';
 import { JobHandler } from '../interfaces/job-handler';
 import { JobRepository } from '../interfaces/job-repository';
 import { JobResultResolver } from '../interfaces/job-result-resolver';
@@ -35,24 +34,28 @@ export class JobProcessor {
       throw err;
     }
 
-    if (!this.hasProcessableStatus(job)) {
-      const err = new Error(`Job status invalid for processing: ${job.status}`);
+    if (job.status !== 'pending') {
+      const err = new Error(
+        `Cannot process job with status '${job.status}'. Expected status: 'pending'.`
+      );
       log.error(
         { err, jobStatus: job.status },
-        'Cannot process job due to invalid status'
+        'Job is not in a pending state for processing'
       );
       throw err;
     }
 
-    if (job.unresolvedDependencies > 0) {
-      const err = new Error('Job has incomplete dependencies');
+    if (job.dependencies.length !== job.completedDependencies.length) {
+      const incompleteDeps = job.dependencies.filter(
+        (depId) => !job.completedDependencies.includes(depId)
+      );
+
+      const err = new Error(
+        `Cannot process job: ${incompleteDeps.length} dependencies are incomplete.`
+      );
       log.error(
-        {
-          err,
-          jobDependencies: job.dependencies,
-          unresolvedDependenciesCount: job.unresolvedDependencies,
-        },
-        'Cannot process job until dependencies are completed'
+        { err, incompleteDependencies: incompleteDeps },
+        'Job cannot be processed until all dependencies are completed'
       );
       throw err;
     }
@@ -104,9 +107,5 @@ export class JobProcessor {
 
       throw errorObj;
     }
-  }
-
-  private hasProcessableStatus<T extends Job>(job: T) {
-    return job.status === 'pending' || job.status === 'failed';
   }
 }

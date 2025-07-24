@@ -61,7 +61,7 @@ function recursiveGetJobs(
         // updatedAt: null,
         // metrics: null,
         dependencies: [],
-        unresolvedDependencies: 0,
+        completedDependencies: [],
       },
     ];
   }
@@ -109,7 +109,7 @@ function recursiveGetJobs(
         // updatedAt: null,
         // metrics: null,
         dependencies: [leftJobs[0].id, rightJobs[0].id],
-        unresolvedDependencies: 2,
+        completedDependencies: [],
       } as Job,
       ...leftJobs,
       ...rightJobs,

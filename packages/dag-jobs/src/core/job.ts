@@ -7,7 +7,7 @@ interface JobBase {
   readonly id: string;
   readonly parentId?: string;
   readonly dependencies: string[];
-  readonly unresolvedDependencies: number;
+  readonly completedDependencies: string[];
   readonly status: JobStatus;
   // version?: number;
   // metrics: {
@@ -32,7 +32,7 @@ interface JobBase {
 
 export type PendingJob<K extends keyof JobRegistry> = JobBase & {
   readonly type: K;
-  readonly status:  JobStatus & 'pending';
+  readonly status: JobStatus & 'pending';
   readonly payload: JobRegistry[K]['payload'];
   readonly result: null;
 };
