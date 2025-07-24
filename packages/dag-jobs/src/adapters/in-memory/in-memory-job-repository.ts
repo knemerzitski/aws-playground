@@ -1,5 +1,5 @@
-import { Job } from './job.types';
-import { JobRepository } from './types';
+import { Job } from '../../core/job';
+import { JobRepository } from '../../interfaces/job-repository';
 
 export class InMemoryJobRepository implements JobRepository {
   private jobById;

@@ -1,6 +1,7 @@
 import { Logger, NoopLogger } from '@repo/logger';
-import { Job } from './job.types';
-import { JobHandler, JobRepository } from './types';
+import { Job } from '../core/job';
+import { JobHandler } from '../interfaces/job-handler';
+import { JobRepository } from '../interfaces/job-repository';
 
 export class JobProcessor {
   constructor(

@@ -1,4 +1,6 @@
-import { JobRegistry } from './job.registry';
+import { JobRegistry } from './job-registry';
+import { JobFromRegistry } from './job-from-registry';
+import { JobStatus } from './job-status';
 
 interface JobBase {
   readonly rootId: string;
@@ -6,7 +8,7 @@ interface JobBase {
   readonly parentId?: string;
   readonly dependencies: string[];
   readonly unresolvedDependencies: number;
-  readonly status: 'pending' | 'in-progress' | 'completed' | 'failed';
+  readonly status: JobStatus;
   // version?: number;
   // metrics: {
   //   computeTimeMs: number;
@@ -28,41 +30,35 @@ interface JobBase {
   // scheduledAt?: string;
 }
 
-type PendingJob<K extends keyof JobRegistry> = JobBase & {
+export type PendingJob<K extends keyof JobRegistry> = JobBase & {
   readonly type: K;
-  readonly status: 'pending';
+  readonly status:  JobStatus & 'pending';
   readonly payload: JobRegistry[K]['payload'];
   readonly result: null;
 };
 
-type InProgressJob<K extends keyof JobRegistry> = JobBase & {
+export type InProgressJob<K extends keyof JobRegistry> = JobBase & {
   readonly type: K;
-  readonly status: 'in-progress';
+  readonly status: JobStatus & 'in-progress';
   readonly payload: JobRegistry[K]['payload'];
   readonly result: null;
 };
 
-type CompletedJob<K extends keyof JobRegistry> = JobBase & {
+export type CompletedJob<K extends keyof JobRegistry> = JobBase & {
   readonly type: K;
-  readonly status: 'completed';
+  readonly status: JobStatus & 'completed';
   readonly payload: JobRegistry[K]['payload'];
   readonly result: JobRegistry[K]['result'];
 };
 
-type FailedJob<K extends keyof JobRegistry> = JobBase & {
+export type FailedJob<K extends keyof JobRegistry> = JobBase & {
   readonly type: K;
-  readonly status: 'failed';
+  readonly status: JobStatus & 'failed';
   readonly payload: JobRegistry[K]['payload'];
   readonly result: null;
   readonly failedAt: string;
   readonly failureReason: string;
 };
-
-export type JobFromRegistry<K extends keyof JobRegistry> =
-  | PendingJob<K>
-  | InProgressJob<K>
-  | CompletedJob<K>
-  | FailedJob<K>;
 
 export type Job = {
   [K in keyof JobRegistry]: JobFromRegistry<K>;

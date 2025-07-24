@@ -1,8 +1,10 @@
-import { InMemoryJobRepository } from './in-memory-job-repository';
-import { JobProcessor } from './job-processor';
-import { JobRegistry } from './job.registry';
-import { Job, JobFromRegistry } from './job.types';
-import { JobHandler, JobRepository } from './types';
+import { InMemoryJobRepository } from './adapters/in-memory/in-memory-job-repository';
+import { JobProcessor } from './logic/job-processor';
+import { JobRegistry } from './core/job-registry';
+import { Job } from './core/job';
+import { JobFromRegistry } from './core/job-from-registry';
+import { JobHandler } from './interfaces/job-handler';
+import { JobRepository } from './interfaces/job-repository';
 
 export { JobProcessor, InMemoryJobRepository };
 
