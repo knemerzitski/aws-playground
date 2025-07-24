@@ -58,9 +58,6 @@ type FailedJob<K extends keyof JobRegistry> = JobBase & {
   readonly failureReason: string;
 };
 
-export type IncompleteJob<T extends Job> = T & { status: 'pending' | 'failed' };
-export type ReadyJob<T extends Job> = T & { status: 'pending' };
-
 export type JobFromRegistry<K extends keyof JobRegistry> =
   | PendingJob<K>
   | InProgressJob<K>

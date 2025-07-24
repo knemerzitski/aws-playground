@@ -1,7 +1,7 @@
 import { assert, expect, it } from 'vitest';
 import { Expression, parseExpression } from '@repo/math-expression';
 import { expressionToJobs } from '../expression/expression-to-jobs';
-import { Job, ReadyJob } from '../job.types';
+import { Job } from '../job.types';
 import {
   AdditionHandler,
   DivisionHandler,
@@ -121,11 +121,9 @@ function createJobsProcessor(jobs: Job[], log: typeof console.log | null = conso
 
   const jobProcessor = new JobProcessor(jobHandlers, jobRepository, logger);
 
-  function isJobReady<T extends Job>(job: T): job is ReadyJob<T> {
-    return job.status === 'pending' && job.incompleteDependenciesCount === 0;
-  }
-
-  const readyJobs: Job[] = [...jobsMap.values()].filter(isJobReady);
+  const readyJobs: Job[] = [...jobsMap.values()].filter(
+    (job) => job.status === 'pending' && job.incompleteDependenciesCount === 0
+  );
 
   return {
     processJobs: async () => {

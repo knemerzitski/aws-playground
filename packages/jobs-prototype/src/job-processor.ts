@@ -1,5 +1,5 @@
 import { Logger, NoopLogger } from '@repo/logger';
-import { IncompleteJob, Job } from './job.types';
+import { Job } from './job.types';
 import { JobHandler, JobRepository } from './types';
 
 export class JobProcessor {
@@ -19,7 +19,7 @@ export class JobProcessor {
       throw err;
     }
 
-    if (!this.isIncompleteJob(job)) {
+    if (!this.hasProcessableStatus(job)) {
       const err = new Error(`Job status invalid for processing: ${job.status}`);
       log.error(
         { err, jobStatus: job.status },
@@ -60,7 +60,7 @@ export class JobProcessor {
     }
   }
 
-  private isIncompleteJob<T extends Job>(job: T): job is IncompleteJob<T> {
+  private hasProcessableStatus<T extends Job>(job: T) {
     return job.status === 'pending' || job.status === 'failed';
   }
 }
