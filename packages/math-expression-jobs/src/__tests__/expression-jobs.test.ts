@@ -17,6 +17,7 @@ import {
   Job,
   JobHandler,
   JobProcessor,
+  JobProcessorEventBridge,
 } from '@repo/dag-jobs';
 import { EventBus } from '@repo/event-bus';
 import { JobEvents } from '../../../dag-jobs/src/core/events';
@@ -38,17 +39,14 @@ async function evaluateExpect(expressionString: string, expected: number) {
 async function distributedEvaluate(expression: Expression): Promise<number> {
   const jobs = expressionToJobs(expression);
 
-  const processedJobs = await processJobs(jobs, null);
+  const processedJobs = await processJobs(jobs);
 
   assert(processedJobs[0]?.result?.type === 'number-literal');
 
   return processedJobs[0]?.result.value;
 }
 
-async function processJobs(
-  jobs: Job[],
-  log: typeof console.log | null = console.log
-): Promise<Job[]> {
+async function processJobs(jobs: Job[]): Promise<Job[]> {
   const logger: Logger = new PinoLogger(
     pino(
       pinoPretty({
@@ -79,6 +77,8 @@ async function processJobs(
     logger,
   });
 
+  new JobProcessorEventBridge(jobProcessor, eventBus);
+
   for (const job of jobRepository.getAllJobs()) {
     if (
       job.status === 'pending' &&
@@ -89,12 +89,6 @@ async function processJobs(
       });
     }
   }
-
-  eventBus.subscribe('job:ready', async ({ payload: { jobId } }) => {
-    log?.(`Processing job: ${jobId}`);
-
-    await jobProcessor.process(jobId);
-  });
 
   // Wait for jobs to be resolved
   await new Promise((res) => {

@@ -7,8 +7,14 @@ import { JobHandler } from './interfaces/job-handler';
 import { JobRepository } from './interfaces/job-repository';
 import { JobResultResolver } from './interfaces/job-result-resolver';
 import { DependencyResolver } from './logic/dependency-resolver';
+import { JobProcessorEventBridge } from './adapters/event-bridges/job-processor-event-bridge';
 
-export { JobProcessor, InMemoryJobRepository, DependencyResolver };
+export {
+  JobProcessor,
+  InMemoryJobRepository,
+  DependencyResolver,
+  JobProcessorEventBridge,
+};
 
 export type {
   Job,
