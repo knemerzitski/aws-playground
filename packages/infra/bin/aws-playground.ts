@@ -3,6 +3,7 @@ import * as cdk from 'aws-cdk-lib';
 import { AwsPlaygroundStack } from '../lib/aws-playground-stack';
 import { createConfigFromEnv } from '../config';
 import { TestDynamoDBStack } from '../lib/test-dynamodb';
+import { TestEventBridgeStack } from '../lib/test-eventbridge';
 
 const config = createConfigFromEnv();
 
@@ -28,6 +29,13 @@ new AwsPlaygroundStack(app, 'AwsPlaygroundStack', {
 });
 
 new TestDynamoDBStack(app, 'TestDynamoDBStack', {
+  env: {
+    account: process.env.CDK_DEFAULT_ACCOUNT,
+    region: process.env.CDK_DEFAULT_REGION,
+  },
+});
+
+new TestEventBridgeStack(app, 'TestEventBridgeStack', {
   env: {
     account: process.env.CDK_DEFAULT_ACCOUNT,
     region: process.env.CDK_DEFAULT_REGION,
