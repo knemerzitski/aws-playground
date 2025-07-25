@@ -11,7 +11,15 @@ import {
 import { Logger, PinoLogger } from '@repo/logger';
 import pino from 'pino';
 import pinoPretty from 'pino-pretty';
-import { InMemoryJobRepository, Job, JobHandler, JobProcessor } from '@repo/dag-jobs';
+import {
+  DependencyResolver,
+  InMemoryJobRepository,
+  Job,
+  JobHandler,
+  JobProcessor,
+} from '@repo/dag-jobs';
+import { EventBus } from '@repo/event-bus';
+import { JobEvents } from '../../../dag-jobs/src/core/events';
 
 it('should evaluate expression jobs for distributed compute', async () => {
   await evaluateExpect('1', 1);
@@ -30,38 +38,17 @@ async function evaluateExpect(expressionString: string, expected: number) {
 async function distributedEvaluate(expression: Expression): Promise<number> {
   const jobs = expressionToJobs(expression);
 
-  const struct = createJobsProcessor(jobs, null);
-  const processedJobs = await struct.processJobs();
+  const processedJobs = await processJobs(jobs, null);
 
   assert(processedJobs[0]?.result?.type === 'number-literal');
 
   return processedJobs[0]?.result.value;
 }
 
-function createJobsProcessor(jobs: Job[], log: typeof console.log | null = console.log) {
-  function completedJob(_job: Job) {
-    log?.(`Job completed`);
-  }
-
-  function updateJobDependants(completedJob: Job) {
-    const dependents = jobRepository
-      .getAllJobs()
-      .filter((job) => job.dependencies.includes(completedJob.id));
-    log?.(`Updating dependants`);
-    for (const dep of dependents) {
-      const updatedJob: Job = {
-        ...dep,
-        completedDependencies: [...dep.completedDependencies, completedJob.id],
-      };
-      jobRepository.setJob(updatedJob);
-
-      if (updatedJob.dependencies.length === updatedJob.completedDependencies.length) {
-        log?.(`Ready to process: ${updatedJob.id}`);
-        readyJobs.push(updatedJob);
-      }
-    }
-  }
-
+async function processJobs(
+  jobs: Job[],
+  log: typeof console.log | null = console.log
+): Promise<Job[]> {
   const logger: Logger = new PinoLogger(
     pino(
       pinoPretty({
@@ -72,7 +59,11 @@ function createJobsProcessor(jobs: Job[], log: typeof console.log | null = conso
   );
   logger.setLevel('info');
 
-  const jobRepository = new InMemoryJobRepository(jobs);
+  const eventBus = new EventBus<JobEvents>();
+
+  const jobRepository = new InMemoryJobRepository(jobs, eventBus);
+
+  new DependencyResolver(eventBus, jobRepository);
 
   const jobHandlers: JobHandler<Job>[] = [
     new AdditionHandler(),
@@ -88,32 +79,27 @@ function createJobsProcessor(jobs: Job[], log: typeof console.log | null = conso
     logger,
   });
 
-  const readyJobs: Job[] = jobRepository
-    .getAllJobs()
-    .filter(
-      (job) =>
-        job.status === 'pending' &&
-        job.dependencies.length === job.completedDependencies.length
-    );
+  for (const job of jobRepository.getAllJobs()) {
+    if (
+      job.status === 'pending' &&
+      job.dependencies.length === job.completedDependencies.length
+    ) {
+      void eventBus.publish('job:ready', {
+        jobId: job.id,
+      });
+    }
+  }
 
-  return {
-    processJobs: async () => {
-      let job: Job | undefined;
-      while ((job = readyJobs.pop()) !== undefined) {
-        log?.(`Processing job: ${job.id}`);
+  eventBus.subscribe('job:ready', async ({ payload: { jobId } }) => {
+    log?.(`Processing job: ${jobId}`);
 
-        try {
-          await jobProcessor.process(job.id);
+    await jobProcessor.process(jobId);
+  });
 
-          completedJob(job);
-          updateJobDependants(job);
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        } catch (_err) {
-          // keep processing other jobs
-        }
-      }
+  // Wait for jobs to be resolved
+  await new Promise((res) => {
+    setTimeout(res, 10);
+  });
 
-      return jobRepository.getAllJobs();
-    },
-  };
+  return jobRepository.getAllJobs();
 }

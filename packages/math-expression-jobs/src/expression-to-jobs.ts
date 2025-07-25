@@ -5,7 +5,7 @@ import {
   NumberLiteral,
   Operator,
 } from '@repo/math-expression';
-import { randomUUID } from 'crypto';
+import { randomUUID } from 'node:crypto';
 import { BinaryExpressionBasePayload, Operator as NamedOperator } from './types';
 import { Job } from '@repo/dag-jobs';
 

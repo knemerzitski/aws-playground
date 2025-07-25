@@ -23,6 +23,7 @@
   },
   "dependencies": {
     "@repo/dag-jobs": "*",
+    "@repo/event-bus": "*",
     "@repo/logger": "*",
     "@repo/math-expression": "*",
     "pino": "^9.7.0"
