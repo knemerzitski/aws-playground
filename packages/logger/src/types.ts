@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export interface Logger {
   /**
    * App is crashing. Notify a human immediately!
@@ -49,7 +50,6 @@ export interface Logger {
    * - Payment successful.
    */
   info(obj: unknown, msg?: string, ...args: any[]): void;
-
   info(msg: string, ...args: any[]): void;
 
   /**
