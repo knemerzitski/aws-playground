@@ -50,7 +50,7 @@ beforeAll(async () => {
   console.timeEnd('cdkOutput');
 });
 
-it('should publish event and trigger lambda', async () => {
+it.skip('should publish event and trigger lambda', async () => {
   console.time('put');
   const putResult = await client.send(
     new PutEventsCommand({

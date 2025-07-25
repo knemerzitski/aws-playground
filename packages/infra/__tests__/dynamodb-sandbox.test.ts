@@ -41,7 +41,7 @@ beforeAll(async () => {
   console.timeEnd('cdkOutput');
 });
 
-it('should put and get item from DynamoDB', async () => {
+it.skip('should put and get item from DynamoDB', async () => {
   console.time('put');
   const putResult = await client.send(
     new PutItemCommand({

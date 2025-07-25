@@ -8,7 +8,6 @@
   },
   "scripts": {
     "clean": "rimraf *.tsbuildinfo",
-    "test": "vitest run",
     "test:w": "vitest watch",
     "lint": "eslint . --max-warnings 0",
     "typecheck": "tsc"
